@@ -50,7 +50,7 @@ Settings → add LeetCode/Codeforces username → we generate a one-time token �
 - **Codeforces**: set the token as your CF *First Name* under Settings → Social. We read it via `user.info`.
 - **LeetCode**: paste the token into your LeetCode bio (*About me*). We read it via the public GraphQL `matchedUser.profile.aboutMe`.
 
-Click Verify. We backfill submissions (CF: last 1000; LC: last 20 AC + totals). After that the hourly cron keeps things fresh.
+Click Verify. We backfill submissions (CF: last 1000; LC: last 20 AC + totals). After that the daily cron keeps things fresh; use the Resync button on Settings for anything in between.
 
 ## Cron jobs
 
@@ -59,7 +59,7 @@ Defined in `vercel.json`:
 | Endpoint | Schedule | Purpose |
 | --- | --- | --- |
 | `/api/cron/sync-problems` | daily 04:00 UTC | refresh CF + LC catalogs and CF contests |
-| `/api/cron/sync-users` | hourly | incremental submission sync + leaderboard snapshot |
+| `/api/cron/sync-users` | daily 05:00 UTC | incremental submission sync + leaderboard snapshot |
 
 Both endpoints require `Authorization: Bearer ${CRON_SECRET}`. Vercel Cron sends this automatically based on your project's environment.
 
