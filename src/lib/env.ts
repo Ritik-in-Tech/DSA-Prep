@@ -11,7 +11,7 @@ const schema = z.object({
   AUTH_GITHUB_ID: z.string().optional().default(""),
   AUTH_GITHUB_SECRET: z.string().optional().default(""),
 
-  CRON_SECRET: z.string().min(8).default("dev-cron-secret"),
+  CRON_SECRET: z.string().min(16),
   LEETCODE_GRAPHQL_URL: z.string().url().default("https://leetcode.com/graphql/"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 });

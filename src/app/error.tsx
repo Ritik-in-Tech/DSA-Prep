@@ -19,8 +19,13 @@ export default function RootError({
     <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
       <h1 className="text-4xl font-bold">Something went wrong</h1>
       <p className="mt-2 max-w-md text-sm text-muted-foreground">
-        {error.message ?? "An unexpected error occurred."}
+        An unexpected error occurred. Please try again or head back home.
       </p>
+      {error.digest && (
+        <p className="mt-2 text-xs text-muted-foreground/70">
+          Reference: <code className="font-mono">{error.digest}</code>
+        </p>
+      )}
       <div className="mt-6 flex gap-2">
         <Button onClick={reset}>Try again</Button>
         <Button asChild variant="outline">

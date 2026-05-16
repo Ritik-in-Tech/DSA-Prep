@@ -131,12 +131,11 @@ export async function verifyHandleAction(formData: FormData): Promise<ActionResu
     revalidatePath("/dashboard");
     return { ok: true, message: "Verified and synced!" };
   } catch (err) {
+    console.error("[verifyHandleAction] failed:", err);
     return {
       ok: false,
       message:
-        err instanceof Error
-          ? `Verification failed: ${err.message}`
-          : "Verification failed",
+        "Verification failed. Please try again in a moment; if it keeps happening, double-check your handle is correct.",
     };
   }
 }
@@ -173,9 +172,10 @@ export async function resyncHandleAction(formData: FormData): Promise<ActionResu
     revalidatePath("/profile/settings");
     return { ok: true, message: "Synced." };
   } catch (err) {
+    console.error("[resyncHandleAction] failed:", err);
     return {
       ok: false,
-      message: err instanceof Error ? err.message : "Sync failed",
+      message: "Sync failed. Please try again in a few minutes.",
     };
   }
 }

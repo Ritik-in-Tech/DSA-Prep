@@ -17,6 +17,14 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
+// Defense-in-depth: only allow relative same-origin paths, never absolute
+// URLs or protocol-relative `//evil.com` strings as the post-login target.
+function safeCallback(from: string | undefined): string {
+  if (!from) return "/dashboard";
+  if (!from.startsWith("/") || from.startsWith("//")) return "/dashboard";
+  return from;
+}
+
 export default async function SignInPage({
   searchParams,
 }: {
@@ -24,10 +32,10 @@ export default async function SignInPage({
 }) {
   const session = await auth();
   const { from } = await searchParams;
+  const callbackUrl = safeCallback(from);
   if (session?.user) {
-    redirect(from || "/dashboard");
+    redirect(callbackUrl);
   }
-  const callbackUrl = from || "/dashboard";
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">

@@ -9,6 +9,10 @@ export interface SaveNoteResult {
   message: string;
 }
 
+// Caps the per-note markdown payload to ~20k chars (well within DB Text limits)
+// to prevent a signed-in user from stuffing the database with huge blobs.
+const MAX_NOTE_LENGTH = 20_000;
+
 export async function saveNoteAction(formData: FormData): Promise<SaveNoteResult> {
   const session = await auth();
   if (!session?.user?.id) return { ok: false, message: "Not signed in" };
@@ -17,6 +21,12 @@ export async function saveNoteAction(formData: FormData): Promise<SaveNoteResult
   const contentMd = String(formData.get("contentMd") ?? "");
 
   if (!problemId) return { ok: false, message: "Missing problem" };
+  if (contentMd.length > MAX_NOTE_LENGTH) {
+    return {
+      ok: false,
+      message: `Note is too long (max ${MAX_NOTE_LENGTH.toLocaleString()} characters).`,
+    };
+  }
 
   await prisma.note.upsert({
     where: {
@@ -46,28 +56,42 @@ export async function markSolvedAction(formData: FormData): Promise<SaveNoteResu
   });
   if (!problem) return { ok: false, message: "Problem not found" };
 
-  await prisma.submission.create({
-    data: {
-      userId: session.user.id,
-      problemId: problem.id,
-      platform: problem.platform,
-      externalId: `manual-${Date.now()}`,
-      verdict: "AC",
-      submittedAt: new Date(),
-      source: "manual",
-    },
+  const today = new Date(
+    new Date().toISOString().slice(0, 10) + "T00:00:00Z"
+  );
+  const dateKey = today.toISOString().slice(0, 10);
+
+  // Dedupe per (user, platform, problem, day) so the same problem can only be
+  // manually marked solved once per UTC day. Prevents click-spam from inflating
+  // submission counts and streaks. The Submission unique key is
+  // (userId, platform, externalId), so encoding problem+date into externalId
+  // gives us the right grain.
+  const created = await prisma.submission.createMany({
+    data: [
+      {
+        userId: session.user.id,
+        problemId: problem.id,
+        platform: problem.platform,
+        externalId: `manual-${problem.id}-${dateKey}`,
+        verdict: "AC",
+        submittedAt: new Date(),
+        source: "manual",
+      },
+    ],
+    skipDuplicates: true,
   });
+
+  if (created.count === 0) {
+    return { ok: true, message: "Already marked solved today." };
+  }
 
   await prisma.streakDay.upsert({
     where: {
-      userId_date: {
-        userId: session.user.id,
-        date: new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z"),
-      },
+      userId_date: { userId: session.user.id, date: today },
     },
     create: {
       userId: session.user.id,
-      date: new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z"),
+      date: today,
       solvedCount: 1,
     },
     update: { solvedCount: { increment: 1 } },
