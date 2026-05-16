@@ -81,7 +81,16 @@ export default function Home() {
       </main>
 
       <footer className="border-t py-6 text-center text-xs text-muted-foreground">
-        Built with Next.js, Prisma, Auth.js, Postgres.
+        © {new Date().getFullYear()} DSA Prep ·{" "}
+        <a
+          href="https://github.com/Ritik-in-Tech/DSA-Prep"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline-offset-4 hover:underline"
+        >
+          GitHub
+        </a>{" "}
+        · Built by Ritik
       </footer>
     </>
   );
