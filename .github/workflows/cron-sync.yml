@@ -1,0 +1,52 @@
+name: External cron
+
+on:
+  schedule:
+    # sync-users every 2h on odd-numbered hours UTC (01, 03, 05, ..., 23)
+    # so it never collides with sync-problems on the same minute.
+    - cron: "0 1-23/2 * * *"
+    # sync-problems every 6h: 00:00, 06:00, 12:00, 18:00 UTC.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Which endpoint to hit"
+        required: true
+        default: "sync-users"
+        type: choice
+        options:
+          - sync-users
+          - sync-problems
+
+concurrency:
+  group: cron-${{ github.event.schedule || github.event.inputs.target }}
+  cancel-in-progress: false
+
+jobs:
+  sync-users:
+    if: github.event.schedule == '0 1-23/2 * * *' || github.event.inputs.target == 'sync-users'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Hit /api/cron/sync-users
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fSs --max-time 540 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$APP_URL/api/cron/sync-users"
+
+  sync-problems:
+    if: github.event.schedule == '0 */6 * * *' || github.event.inputs.target == 'sync-problems'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Hit /api/cron/sync-problems
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fSs --max-time 540 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$APP_URL/api/cron/sync-problems"

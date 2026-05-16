@@ -50,18 +50,25 @@ Settings → add LeetCode/Codeforces username → we generate a one-time token �
 - **Codeforces**: set the token as your CF *First Name* under Settings → Social. We read it via `user.info`.
 - **LeetCode**: paste the token into your LeetCode bio (*About me*). We read it via the public GraphQL `matchedUser.profile.aboutMe`.
 
-Click Verify. We backfill submissions (CF: last 1000; LC: last 20 AC + totals). After that the daily cron keeps things fresh; use the Resync button on Settings for anything in between.
+Click Verify. We backfill submissions (CF: last 1000; LC: last 20 AC + totals). After that the cron keeps things fresh; use the Resync button on Settings for anything in between.
 
 ## Cron jobs
 
-Defined in `vercel.json`:
+Scheduling lives in `.github/workflows/cron-sync.yml` (GitHub Actions) instead of Vercel Cron, because Vercel Hobby caps crons at one run per day. The Action just `curl`s the existing Next.js routes with an `Authorization: Bearer ${CRON_SECRET}` header.
 
-| Endpoint | Schedule | Purpose |
+| Endpoint | Schedule (UTC) | Purpose |
 | --- | --- | --- |
-| `/api/cron/sync-problems` | daily 04:00 UTC | refresh CF + LC catalogs and CF contests |
-| `/api/cron/sync-users` | daily 05:00 UTC | incremental submission sync + leaderboard snapshot |
+| `/api/cron/sync-problems` | every 6h: `00, 06, 12, 18` | refresh CF + LC catalogs and CF + LC upcoming contests |
+| `/api/cron/sync-users` | every 2h on odd hours: `01, 03, ..., 23` | incremental submission sync + leaderboard snapshot |
 
-Both endpoints require `Authorization: Bearer ${CRON_SECRET}`. Vercel Cron sends this automatically based on your project's environment.
+Required GitHub repository secrets (`Settings -> Secrets and variables -> Actions`):
+
+| Secret | Value |
+| --- | --- |
+| `APP_URL` | Production base URL, e.g. `https://dailydsaprep.vercel.app` (no trailing slash) |
+| `CRON_SECRET` | Same value as the `CRON_SECRET` env var in your Vercel project |
+
+You can also fire either job on demand from the Actions tab via **Run workflow -> External cron** and pick the target endpoint.
 
 ## Scripts
 
@@ -107,5 +114,5 @@ scripts/              seed entry points + data/{striver,neetcode}
 1. Push to a Git repo.
 2. New Vercel project → import the repo → set env vars from `.env.example` (use a Neon Postgres URL).
 3. Add OAuth callbacks: `https://<your-app>/api/auth/callback/google` and `/github`.
-4. Cron is auto-detected from `vercel.json`. Add `CRON_SECRET` to Vercel env vars.
+4. Add `CRON_SECRET` to Vercel env vars, then mirror it (plus `APP_URL`) into GitHub repo secrets so `.github/workflows/cron-sync.yml` can drive the cron endpoints.
 5. After first deploy run `pnpm db:migrate deploy` (Vercel build hook) or run `prisma db push` from your machine pointed at the Neon URL.
