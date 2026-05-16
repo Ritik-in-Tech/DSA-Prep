@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import type { PlatformHandle } from "@prisma/client";
-import { Check, Copy, RotateCw, Trash2 } from "lucide-react";
+import { Check, Copy, Loader2, RotateCw, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
     handle?.verifyToken ?? null
   );
   const [input, setInput] = useState(handle?.handle ?? "");
+  const [justVerified, setJustVerified] = useState(false);
 
   const verified = Boolean(handle?.verifiedAt);
   const hasUnverified = Boolean(handle && !handle.verifiedAt);
@@ -51,6 +52,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
       if (res.ok) {
         toast.success(res.message);
         setVerifyToken(null);
+        setJustVerified(true);
       } else toast.error(res.message);
     });
   };
@@ -74,6 +76,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
         toast.success(res.message);
         setInput("");
         setVerifyToken(null);
+        setJustVerified(false);
       } else toast.error(res.message);
     });
   };
@@ -98,6 +101,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
           />
         </div>
         <Button type="submit" disabled={pending}>
+          {pending && <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />}
           {handle ? "Update" : "Save"}
         </Button>
       </form>
@@ -122,7 +126,12 @@ export function PlatformHandleForm({ platform, handle }: Props) {
               onClick={onResync}
               disabled={pending}
             >
-              <RotateCw className="h-3.5 w-3.5" /> Sync now
+              {pending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <RotateCw className="h-3.5 w-3.5" />
+              )}{" "}
+              Sync now
             </Button>
             <Button
               size="sm"
@@ -136,6 +145,45 @@ export function PlatformHandleForm({ platform, handle }: Props) {
         </div>
       )}
 
+      {verified && justVerified && (
+        <div className="flex items-start justify-between gap-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm">
+          <div className="space-y-2">
+            <p className="font-medium">
+              Cleanup tip — you can remove the token now.
+            </p>
+            <p className="text-muted-foreground">
+              Your dsapv-… token is still in your{" "}
+              {platform === "CODEFORCES"
+                ? "Codeforces First Name"
+                : "LeetCode bio"}
+              . It is safe to delete; we won&apos;t need it again.
+            </p>
+            <Button asChild size="sm" variant="outline">
+              <a
+                href={
+                  platform === "CODEFORCES"
+                    ? "https://codeforces.com/settings/general"
+                    : "https://leetcode.com/profile/"
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open{" "}
+                {platform === "CODEFORCES" ? "Codeforces" : "LeetCode"} settings
+              </a>
+            </Button>
+          </div>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setJustVerified(false)}
+            aria-label="Dismiss"
+          >
+            Dismiss
+          </Button>
+        </div>
+      )}
+
       {hasUnverified && verifyToken && (
         <div className="space-y-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm">
           <p className="font-medium">Verification required</p>
@@ -146,7 +194,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
               <a
                 href={
                   platform === "CODEFORCES"
-                    ? "https://codeforces.com/settings/social"
+                    ? "https://codeforces.com/settings/general"
                     : "https://leetcode.com/profile/"
                 }
                 target="_blank"
@@ -177,6 +225,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
           </div>
           <div className="flex gap-2 pt-1">
             <Button size="sm" onClick={onVerify} disabled={pending}>
+              {pending && <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />}
               Verify
             </Button>
             <Button size="sm" variant="ghost" onClick={onRemove} disabled={pending}>

@@ -42,7 +42,7 @@ export async function addHandleAction(formData: FormData): Promise<ActionResult>
     return { ok: false, message: first?.message ?? "Invalid input" };
   }
 
-  const verifyToken = `dsa-prep-${randomBytes(4).toString("hex")}`;
+  const verifyToken = `dsapv-${randomBytes(4).toString("hex")}`;
 
   await prisma.platformHandle.upsert({
     where: {
@@ -104,7 +104,9 @@ export async function verifyHandleAction(formData: FormData): Promise<ActionResu
       return {
         ok: false,
         message:
-          "Token not found in your profile yet. Make sure you saved it (CF: first name field, LC: bio).",
+          platform === "CODEFORCES"
+            ? "We didn't see the token in your Codeforces First Name yet. Make sure you clicked 'Save Changes' on Codeforces — profile edits can take up to a minute to show up. Try Verify again in a moment."
+            : "We didn't see the token in your LeetCode bio yet. Make sure you clicked 'Save' on LeetCode — profile edits can take up to a minute to show up. Try Verify again in a moment.",
       };
     }
 
