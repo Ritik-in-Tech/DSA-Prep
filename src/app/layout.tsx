@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { env } from "@/lib/env";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -20,7 +21,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DSA Prep — topicwise LeetCode & ratingwise Codeforces",
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+  title: {
+    default: "DSA Prep — topicwise LeetCode & ratingwise Codeforces",
+    template: "%s · DSA Prep",
+  },
   description:
     "Curated DSA preparation with topicwise LeetCode and ratingwise Codeforces problems. Track streaks, sync your accounts, follow Striver/NeetCode sheets.",
 };
