@@ -6,11 +6,13 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { formatInTimezone } from "@/lib/utils";
 import { computeStreak } from "@/server/services/streak";
+import { getUserLeaderboardStats } from "@/server/services/leaderboard";
 import { recommendForUser } from "@/server/services/recommendations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StreakCard } from "@/components/streak/streak-card";
+import { StatsCard } from "@/components/dashboard/stats-card";
 import { DifficultyBadge, RatingBadge } from "@/components/problems/difficulty-badge";
 
 export const metadata = { title: "Dashboard — DSA Prep" };
@@ -26,8 +28,9 @@ export default async function DashboardPage() {
   });
   const tz = user?.timezone ?? "UTC";
 
-  const [streak, reco, recent, upcoming, handles] = await Promise.all([
+  const [streak, stats, reco, recent, upcoming, handles] = await Promise.all([
     computeStreak(userId, tz),
+    getUserLeaderboardStats(userId),
     recommendForUser(userId),
     prisma.submission.findMany({
       where: { userId },
@@ -74,6 +77,8 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       )}
+
+      {!noHandles && <StatsCard stats={stats} />}
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">

@@ -9,7 +9,7 @@ import {
   type CfSubmission,
 } from "@/lib/codeforces";
 import { recordAcSolves } from "@/server/services/streak";
-import { chunk, slugify } from "@/lib/utils";
+import { chunk, slugify, sleep } from "@/lib/utils";
 
 export async function syncCodeforcesCatalog(): Promise<{
   problemsUpserted: number;
@@ -201,79 +201,118 @@ function mapVerdict(v: CfSubmission["verdict"]) {
   }
 }
 
+// Page size for CF user.status pagination. CF allows up to ~10000 per call but
+// 1000 is a friendlier batch and matches the prior behaviour for incremental
+// syncs.
+const CF_STATUS_PAGE = 1000;
+// Hard upper bound to protect against runaway pagination on weird accounts.
+const CF_MAX_PAGES = 25;
+
+async function fetchCfSubmissions(
+  handle: string,
+  fromSeconds: number | undefined,
+): Promise<CfSubmission[]> {
+  // CF returns submissions in reverse chronological order. We paginate from
+  // newest to oldest. In incremental mode (fromSeconds set) we stop as soon as
+  // we see a submission older than the cutoff. In full-backfill mode we stop
+  // when a page returns fewer than CF_STATUS_PAGE rows.
+  const all: CfSubmission[] = [];
+  for (let page = 0; page < CF_MAX_PAGES; page++) {
+    const from = page * CF_STATUS_PAGE + 1;
+    const batch = await getUserStatus(handle, { from, count: CF_STATUS_PAGE });
+    if (batch.length === 0) break;
+
+    if (fromSeconds !== undefined) {
+      const fresh = batch.filter((s) => s.creationTimeSeconds > fromSeconds);
+      all.push(...fresh);
+      // If we hit a submission older than the cutoff, every later page is also
+      // older — stop paginating.
+      if (fresh.length < batch.length) break;
+    } else {
+      all.push(...batch);
+    }
+
+    if (batch.length < CF_STATUS_PAGE) break;
+    // Be polite to the CF API between pages.
+    await sleep(400);
+  }
+  return all;
+}
+
 export async function syncCodeforcesUser(args: {
   userId: string;
   handle: string;
   fromSeconds?: number;
   timezone?: string;
-}): Promise<{ inserted: number }> {
+}): Promise<{ inserted: number; solvedCount: number }> {
   const { userId, handle, fromSeconds, timezone } = args;
 
-  const submissions = await getUserStatus(handle, { from: 1, count: 1000 });
-
-  const filtered = fromSeconds
-    ? submissions.filter((s) => s.creationTimeSeconds > fromSeconds)
-    : submissions;
-
-  if (filtered.length === 0) {
-    await prisma.platformHandle.updateMany({
-      where: { userId, platform: "CODEFORCES", handle },
-      data: { lastSyncedAt: new Date() },
-    });
-    return { inserted: 0 };
-  }
-
-  const externalIds = Array.from(
-    new Set(filtered.map((s) => cfExternalId(s.problem as CfProblem))),
-  );
-  const problems = await prisma.problem.findMany({
-    where: {
-      platform: "CODEFORCES",
-      externalId: { in: externalIds },
-    },
-    select: { id: true, externalId: true },
-  });
-  const problemMap = new Map(problems.map((p) => [p.externalId, p.id]));
-
-  const acDates: Date[] = [];
-  const rows = filtered
-    .map((s) => {
-      const externalId = cfExternalId(s.problem as CfProblem);
-      const problemId = problemMap.get(externalId);
-      if (!problemId) return null;
-      const verdict = mapVerdict(s.verdict);
-      const submittedAt = new Date(s.creationTimeSeconds * 1000);
-      if (verdict === "AC") acDates.push(submittedAt);
-      return {
-        userId,
-        problemId,
-        platform: "CODEFORCES" as const,
-        externalId: String(s.id),
-        verdict,
-        language: s.programmingLanguage,
-        submittedAt,
-        source: "cf-api",
-      };
-    })
-    .filter((r): r is NonNullable<typeof r> => r !== null);
+  const filtered = await fetchCfSubmissions(handle, fromSeconds);
 
   let inserted = 0;
-  for (const batch of chunk(rows, 500)) {
-    const res = await prisma.submission.createMany({
-      data: batch,
-      skipDuplicates: true,
+  if (filtered.length > 0) {
+    const externalIds = Array.from(
+      new Set(filtered.map((s) => cfExternalId(s.problem as CfProblem))),
+    );
+    const problems = await prisma.problem.findMany({
+      where: {
+        platform: "CODEFORCES",
+        externalId: { in: externalIds },
+      },
+      select: { id: true, externalId: true },
     });
-    inserted += res.count;
+    const problemMap = new Map(problems.map((p) => [p.externalId, p.id]));
+
+    const acDates: Date[] = [];
+    const rows = filtered
+      .map((s) => {
+        const externalId = cfExternalId(s.problem as CfProblem);
+        const problemId = problemMap.get(externalId);
+        if (!problemId) return null;
+        const verdict = mapVerdict(s.verdict);
+        const submittedAt = new Date(s.creationTimeSeconds * 1000);
+        if (verdict === "AC") acDates.push(submittedAt);
+        return {
+          userId,
+          problemId,
+          platform: "CODEFORCES" as const,
+          externalId: String(s.id),
+          verdict,
+          language: s.programmingLanguage,
+          submittedAt,
+          source: "cf-api",
+        };
+      })
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+
+    for (const batch of chunk(rows, 500)) {
+      const res = await prisma.submission.createMany({
+        data: batch,
+        skipDuplicates: true,
+      });
+      inserted += res.count;
+    }
+
+    if (acDates.length > 0) {
+      await recordAcSolves(userId, acDates, timezone ?? "UTC");
+    }
   }
 
-  if (acDates.length > 0) {
-    await recordAcSolves(userId, acDates, timezone ?? "UTC");
-  }
+  // Recompute the authoritative "distinct AC problems" count from the local
+  // Submission table. After a full backfill this matches CF's profile UI; on
+  // incremental syncs it stays correct since we only ever add submissions.
+  const distinct = await prisma.submission.findMany({
+    where: { userId, platform: "CODEFORCES", verdict: "AC" },
+    distinct: ["problemId"],
+    select: { problemId: true },
+  });
+  const solvedCount = distinct.length;
 
+  const handlePatch = { solvedCount, lastSyncedAt: new Date() };
   await prisma.platformHandle.updateMany({
     where: { userId, platform: "CODEFORCES", handle },
-    data: { lastSyncedAt: new Date() },
+    data: handlePatch,
   });
 
-  return { inserted };
+  return { inserted, solvedCount };
 }

@@ -7,6 +7,7 @@ import {
   lcContestUrl,
   lcProblemUrl,
   mapLcDifficulty,
+  type LcUserStats,
 } from "@/lib/leetcode";
 import { sleep, chunk } from "@/lib/utils";
 import { recordAcSolves } from "@/server/services/streak";
@@ -127,19 +128,38 @@ export async function syncLeetCodeCatalog(
   return { problemsUpserted: toCreate.length + toUpdate.length, pages };
 }
 
+function pickAcCount(stats: LcUserStats | null, difficulty: string): number | null {
+  return stats?.submitStats.acSubmissionNum.find((d) => d.difficulty === difficulty)?.count ?? null;
+}
+
 export async function syncLeetCodeUser(args: {
   userId: string;
   username: string;
   timezone?: string;
-}): Promise<{ inserted: number }> {
+}): Promise<{ inserted: number; solvedCount: number | null }> {
   const { userId, username, timezone } = args;
-  const acs = await getRecentAcSubmissions(username, 20);
+
+  // LeetCode silently clamps `recentAcSubmissionList` (typically ~20 for
+  // unauthenticated callers), but asking for more is harmless and lets us
+  // capture a few extra entries on accounts where they raise the cap.
+  const acs = await getRecentAcSubmissions(username, 100);
+
+  const stats = await getUserStats(username).catch(() => null);
+  const solvedCount = pickAcCount(stats, "All");
+  const handlePatch = {
+    solvedCount,
+    solvedEasy: pickAcCount(stats, "Easy"),
+    solvedMedium: pickAcCount(stats, "Medium"),
+    solvedHard: pickAcCount(stats, "Hard"),
+    lastSyncedAt: new Date(),
+  };
+
   if (acs.length === 0) {
     await prisma.platformHandle.updateMany({
       where: { userId, platform: "LEETCODE", handle: username },
-      data: { lastSyncedAt: new Date() },
+      data: handlePatch,
     });
-    return { inserted: 0 };
+    return { inserted: 0, solvedCount };
   }
 
   const slugs = acs.map((s) => `lc-${s.titleSlug}`);
@@ -186,10 +206,10 @@ export async function syncLeetCodeUser(args: {
 
   await prisma.platformHandle.updateMany({
     where: { userId, platform: "LEETCODE", handle: username },
-    data: { lastSyncedAt: new Date() },
+    data: handlePatch,
   });
 
-  return { inserted };
+  return { inserted, solvedCount };
 }
 
 export async function verifyLeetCodeBioToken(username: string, token: string): Promise<boolean> {

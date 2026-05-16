@@ -90,6 +90,13 @@ model PlatformHandle {
   verifyToken  String?
   verifiedAt   DateTime?
   lastSyncedAt DateTime?
+  // Cached "distinct problems solved" count from the upstream platform.
+  // For LEETCODE: submitStatsGlobal.acSubmissionNum where difficulty='All'.
+  // For CODEFORCES: COUNT(DISTINCT problemId) over local AC Submission rows.
+  solvedCount  Int?
+  solvedEasy   Int?
+  solvedMedium Int?
+  solvedHard   Int?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
