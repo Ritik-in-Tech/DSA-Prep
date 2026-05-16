@@ -40,9 +40,7 @@ export async function seedSheet(args: SeedSheetArgs) {
     }
   }
 
-  const allSlugs = args.sections.flatMap((s) =>
-    s.problems.map((p) => `lc-${p.lcSlug}`)
-  );
+  const allSlugs = args.sections.flatMap((s) => s.problems.map((p) => `lc-${p.lcSlug}`));
   const problems = await prisma.problem.findMany({
     where: { platform: "LEETCODE", slug: { in: allSlugs } },
     select: { id: true, slug: true },
@@ -91,6 +89,6 @@ export async function seedSheet(args: SeedSheetArgs) {
   }
 
   console.log(
-    `[seed-sheet] ${args.name}: ${newRows.length} new, ${existingProblemIds.size} already linked, ${missing} missing in LC catalog`
+    `[seed-sheet] ${args.name}: ${newRows.length} new, ${existingProblemIds.size} already linked, ${missing} missing in LC catalog`,
   );
 }

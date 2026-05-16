@@ -4,10 +4,7 @@ import { ExternalLink, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  DifficultyBadge,
-  RatingBadge,
-} from "@/components/problems/difficulty-badge";
+import { DifficultyBadge, RatingBadge } from "@/components/problems/difficulty-badge";
 
 import type { Problem, Topic, ProblemTopic } from "@prisma/client";
 
@@ -16,19 +13,11 @@ type RowProblem = Problem & {
   topics: (ProblemTopic & { topic: Topic })[];
 };
 
-export function ProblemRow({
-  problem,
-  showRating,
-}: {
-  problem: RowProblem;
-  showRating?: boolean;
-}) {
+export function ProblemRow({ problem, showRating }: { problem: RowProblem; showRating?: boolean }) {
   return (
     <TableRow>
-      <TableCell className="w-10 align-middle text-muted-foreground">
-        {problem.isSolved ? (
-          <Check className="h-4 w-4 text-emerald-500" />
-        ) : null}
+      <TableCell className="text-muted-foreground w-10 align-middle">
+        {problem.isSolved ? <Check className="h-4 w-4 text-emerald-500" /> : null}
       </TableCell>
       <TableCell className="font-medium">
         <Link
@@ -46,9 +35,7 @@ export function ProblemRow({
             </Badge>
           ))}
           {problem.topics.length > 4 && (
-            <span className="text-xs text-muted-foreground">
-              +{problem.topics.length - 4}
-            </span>
+            <span className="text-muted-foreground text-xs">+{problem.topics.length - 4}</span>
           )}
         </div>
       </TableCell>

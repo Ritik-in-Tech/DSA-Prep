@@ -19,16 +19,16 @@ Open <http://localhost:3000>.
 
 ## Environment
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `DATABASE_URL` | yes | Postgres connection string. Neon pooled: `postgresql://…-pooler.<region>.neon.tech/db?sslmode=require`. |
-| `DIRECT_URL` | yes | Non-pooled Postgres URL used by `prisma migrate` (Neon: same as `DATABASE_URL` minus `-pooler`). |
-| `AUTH_SECRET` | yes | Auth.js JWT secret. Generate with `openssl rand -base64 32`. |
-| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | optional | Google OAuth client. Authorized redirect URI: `<APP_URL>/api/auth/callback/google`. |
-| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | optional | GitHub OAuth client. Authorized callback: `<APP_URL>/api/auth/callback/github`. |
-| `CRON_SECRET` | yes | Shared secret for `/api/cron/*`. Cron jobs must send `Authorization: Bearer <CRON_SECRET>`. |
-| `LEETCODE_GRAPHQL_URL` | no | Default: `https://leetcode.com/graphql/`. |
-| `NEXT_PUBLIC_APP_URL` | no | Public app URL, used in metadata. |
+| Variable                                | Required | Purpose                                                                                                 |
+| --------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                          | yes      | Postgres connection string. Neon pooled: `postgresql://…-pooler.<region>.neon.tech/db?sslmode=require`. |
+| `DIRECT_URL`                            | yes      | Non-pooled Postgres URL used by `prisma migrate` (Neon: same as `DATABASE_URL` minus `-pooler`).        |
+| `AUTH_SECRET`                           | yes      | Auth.js JWT secret. Generate with `openssl rand -base64 32`.                                            |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | optional | Google OAuth client. Authorized redirect URI: `<APP_URL>/api/auth/callback/google`.                     |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | optional | GitHub OAuth client. Authorized callback: `<APP_URL>/api/auth/callback/github`.                         |
+| `CRON_SECRET`                           | yes      | Shared secret for `/api/cron/*`. Cron jobs must send `Authorization: Bearer <CRON_SECRET>`.             |
+| `LEETCODE_GRAPHQL_URL`                  | no       | Default: `https://leetcode.com/graphql/`.                                                               |
+| `NEXT_PUBLIC_APP_URL`                   | no       | Public app URL, used in metadata.                                                                       |
 
 > At least one OAuth provider must be configured for users to sign in.
 
@@ -47,8 +47,8 @@ If you'd rather run Postgres locally, install it any way you like (Homebrew, Pos
 
 Settings → add LeetCode/Codeforces username → we generate a one-time token →
 
-- **Codeforces**: set the token as your CF *First Name* under Settings → Social. We read it via `user.info`.
-- **LeetCode**: paste the token into your LeetCode bio (*About me*). We read it via the public GraphQL `matchedUser.profile.aboutMe`.
+- **Codeforces**: set the token as your CF _First Name_ under Settings → Social. We read it via `user.info`.
+- **LeetCode**: paste the token into your LeetCode bio (_About me_). We read it via the public GraphQL `matchedUser.profile.aboutMe`.
 
 Click Verify. We backfill submissions (CF: last 1000; LC: last 20 AC + totals). After that the cron keeps things fresh; use the Resync button on Settings for anything in between.
 
@@ -56,33 +56,33 @@ Click Verify. We backfill submissions (CF: last 1000; LC: last 20 AC + totals). 
 
 Scheduling lives in `.github/workflows/cron-sync.yml` (GitHub Actions) instead of Vercel Cron, because Vercel Hobby caps crons at one run per day. The Action just `curl`s the existing Next.js routes with an `Authorization: Bearer ${CRON_SECRET}` header.
 
-| Endpoint | Schedule (UTC) | Purpose |
-| --- | --- | --- |
-| `/api/cron/sync-problems` | every 6h: `00, 06, 12, 18` | refresh CF + LC catalogs and CF + LC upcoming contests |
-| `/api/cron/sync-users` | every 2h on odd hours: `01, 03, ..., 23` | incremental submission sync + leaderboard snapshot |
+| Endpoint                  | Schedule (UTC)                           | Purpose                                                |
+| ------------------------- | ---------------------------------------- | ------------------------------------------------------ |
+| `/api/cron/sync-problems` | every 6h: `00, 06, 12, 18`               | refresh CF + LC catalogs and CF + LC upcoming contests |
+| `/api/cron/sync-users`    | every 2h on odd hours: `01, 03, ..., 23` | incremental submission sync + leaderboard snapshot     |
 
 Required GitHub repository secrets (`Settings -> Secrets and variables -> Actions`):
 
-| Secret | Value |
-| --- | --- |
-| `APP_URL` | Production base URL, e.g. `https://dailydsaprep.vercel.app` (no trailing slash) |
-| `CRON_SECRET` | Same value as the `CRON_SECRET` env var in your Vercel project |
+| Secret        | Value                                                                           |
+| ------------- | ------------------------------------------------------------------------------- |
+| `APP_URL`     | Production base URL, e.g. `https://dailydsaprep.vercel.app` (no trailing slash) |
+| `CRON_SECRET` | Same value as the `CRON_SECRET` env var in your Vercel project                  |
 
 You can also fire either job on demand from the Actions tab via **Run workflow -> External cron** and pick the target endpoint.
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Next.js dev server |
-| `pnpm build` && `pnpm start` | production build + serve |
-| `pnpm db:migrate` | `prisma migrate dev` |
-| `pnpm db:push` | push schema without migration (handy for prototyping) |
-| `pnpm db:studio` | Prisma Studio |
-| `pnpm db:seed` | full seed (CF + LC catalogs, contests, sheets). Uses batched `createMany` — finishes in ~30-60s even against remote Postgres. |
-| `pnpm seed:cf` | Codeforces problems + contests only (~10k rows) |
-| `pnpm seed:lc` | LeetCode catalog only (~3k rows) |
-| `pnpm seed:sheets` | Striver + NeetCode sheets (run after `seed:lc`) |
+| Command                      | What it does                                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                   | Next.js dev server                                                                                                            |
+| `pnpm build` && `pnpm start` | production build + serve                                                                                                      |
+| `pnpm db:migrate`            | `prisma migrate dev`                                                                                                          |
+| `pnpm db:push`               | push schema without migration (handy for prototyping)                                                                         |
+| `pnpm db:studio`             | Prisma Studio                                                                                                                 |
+| `pnpm db:seed`               | full seed (CF + LC catalogs, contests, sheets). Uses batched `createMany` — finishes in ~30-60s even against remote Postgres. |
+| `pnpm seed:cf`               | Codeforces problems + contests only (~10k rows)                                                                               |
+| `pnpm seed:lc`               | LeetCode catalog only (~3k rows)                                                                                              |
+| `pnpm seed:sheets`           | Striver + NeetCode sheets (run after `seed:lc`)                                                                               |
 
 ## Project layout
 

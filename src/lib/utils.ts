@@ -37,7 +37,7 @@ export function formatInTimezone(
   options: Intl.DateTimeFormatOptions = {
     dateStyle: "medium",
     timeStyle: "short",
-  }
+  },
 ): string {
   const date = input instanceof Date ? input : new Date(input);
   return new Intl.DateTimeFormat("en-US", {

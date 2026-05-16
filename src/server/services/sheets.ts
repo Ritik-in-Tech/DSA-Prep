@@ -31,7 +31,7 @@ export async function listSheetsWithProgress(userId: string | null) {
         solvedCount,
         totalProblems: s._count.problems,
       };
-    })
+    }),
   );
   return result;
 }

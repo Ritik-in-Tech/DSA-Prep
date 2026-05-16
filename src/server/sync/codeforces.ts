@@ -22,7 +22,7 @@ export async function syncCodeforcesCatalog(): Promise<{
     select: { id: true, externalId: true },
   });
   const existingMap = new Map<string, string>(
-    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id])
+    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id]),
   );
 
   const allTagNames = new Set<string>();
@@ -33,7 +33,7 @@ export async function syncCodeforcesCatalog(): Promise<{
     select: { id: true, slug: true },
   });
   const topicMap = new Map<string, string>(
-    existingTopics.map((t: { slug: string; id: string }) => [t.slug, t.id])
+    existingTopics.map((t: { slug: string; id: string }) => [t.slug, t.id]),
   );
 
   const newTopics = Array.from(allTagNames)
@@ -121,8 +121,8 @@ export async function syncCodeforcesCatalog(): Promise<{
             rating: u.cf.rating ?? null,
             contestId: u.cf.contestId?.toString() ?? null,
           },
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -137,7 +137,7 @@ export async function syncCodeforcesContests(): Promise<{ upserted: number }> {
     where: { platform: "CODEFORCES" },
     select: { id: true, externalId: true },
   });
-  const existingMap = new Map(existing.map((e: { externalId: any; id: any; }) => [e.externalId, e.id]));
+  const existingMap = new Map(existing.map((e) => [e.externalId, e.id]));
 
   const toCreate = usable.filter((c) => !existingMap.has(String(c.id)));
   const toUpdate = usable.filter((c) => existingMap.has(String(c.id)));
@@ -171,8 +171,8 @@ export async function syncCodeforcesContests(): Promise<{ upserted: number }> {
             startsAt: new Date(c.startTimeSeconds! * 1000),
             durationMin: Math.round(c.durationSeconds / 60),
           },
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -224,7 +224,7 @@ export async function syncCodeforcesUser(args: {
   }
 
   const externalIds = Array.from(
-    new Set(filtered.map((s) => cfExternalId(s.problem as CfProblem)))
+    new Set(filtered.map((s) => cfExternalId(s.problem as CfProblem))),
   );
   const problems = await prisma.problem.findMany({
     where: {
@@ -233,7 +233,7 @@ export async function syncCodeforcesUser(args: {
     },
     select: { id: true, externalId: true },
   });
-  const problemMap = new Map(problems.map((p: { externalId: any; id: any; }) => [p.externalId, p.id]));
+  const problemMap = new Map(problems.map((p) => [p.externalId, p.id]));
 
   const acDates: Date[] = [];
   const rows = filtered

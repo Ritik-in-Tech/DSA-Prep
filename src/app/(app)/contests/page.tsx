@@ -4,13 +4,7 @@ import type { Platform } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { formatInTimezone } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -49,11 +43,7 @@ export default async function ContestsPage({
 }) {
   const sp = await searchParams;
   const platform: Platform | null =
-    sp.platform === "LEETCODE"
-      ? "LEETCODE"
-      : sp.platform === "CODEFORCES"
-        ? "CODEFORCES"
-        : null;
+    sp.platform === "LEETCODE" ? "LEETCODE" : sp.platform === "CODEFORCES" ? "CODEFORCES" : null;
   const now = new Date();
 
   const baseWhere: { platform?: Platform } = platform ? { platform } : {};
@@ -84,13 +74,10 @@ export default async function ContestsPage({
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Contests</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Upcoming Codeforces and LeetCode contests. Times shown in{" "}
-          <span className="font-medium text-foreground">{tz}</span>{" "}
-          <Link
-            href="/profile/settings"
-            className="underline-offset-4 hover:underline"
-          >
+          <span className="text-foreground font-medium">{tz}</span>{" "}
+          <Link href="/profile/settings" className="underline-offset-4 hover:underline">
             (change)
           </Link>
           .
@@ -105,7 +92,7 @@ export default async function ContestsPage({
         <TabsContent value="upcoming" className="space-y-3">
           {upcoming.length === 0 && (
             <Card>
-              <CardContent className="p-6 text-sm text-muted-foreground">
+              <CardContent className="text-muted-foreground p-6 text-sm">
                 No upcoming contests. Run the cron job to refresh the contest list.
               </CardContent>
             </Card>
@@ -131,7 +118,7 @@ export default async function ContestsPage({
                       href={gcalLink(c.name, c.startsAt, c.durationMin, c.url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md border px-3 py-1 text-xs hover:bg-accent"
+                      className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-1 text-xs"
                     >
                       Add to Google Calendar
                     </a>
@@ -139,7 +126,7 @@ export default async function ContestsPage({
                       href={c.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md border px-3 py-1 text-xs hover:bg-accent"
+                      className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-1 text-xs"
                     >
                       Open <ExternalLink className="h-3 w-3" />
                     </a>
@@ -170,7 +157,7 @@ export default async function ContestsPage({
                     href={c.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-md border px-3 py-1 text-xs hover:bg-accent"
+                    className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-1 text-xs"
                   >
                     Standings <ExternalLink className="h-3 w-3" />
                   </a>

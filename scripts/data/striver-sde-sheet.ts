@@ -104,10 +104,19 @@ export const STRIVER_SDE_SHEET: StriverSection[] = [
     name: "Binary Search",
     problems: [
       { title: "Search in Rotated Sorted Array", lcSlug: "search-in-rotated-sorted-array" },
-      { title: "Find Minimum in Rotated Sorted Array", lcSlug: "find-minimum-in-rotated-sorted-array" },
+      {
+        title: "Find Minimum in Rotated Sorted Array",
+        lcSlug: "find-minimum-in-rotated-sorted-array",
+      },
       { title: "Median of Two Sorted Arrays", lcSlug: "median-of-two-sorted-arrays" },
-      { title: "Kth Element of Two Sorted Arrays", lcSlug: "kth-smallest-element-in-a-sorted-matrix" },
-      { title: "Allocate Books / Capacity to Ship Packages", lcSlug: "capacity-to-ship-packages-within-d-days" },
+      {
+        title: "Kth Element of Two Sorted Arrays",
+        lcSlug: "kth-smallest-element-in-a-sorted-matrix",
+      },
+      {
+        title: "Allocate Books / Capacity to Ship Packages",
+        lcSlug: "capacity-to-ship-packages-within-d-days",
+      },
     ],
   },
   {
@@ -144,10 +153,19 @@ export const STRIVER_SDE_SHEET: StriverSection[] = [
       { title: "Diameter of Binary Tree", lcSlug: "diameter-of-binary-tree" },
       { title: "Balanced Binary Tree", lcSlug: "balanced-binary-tree" },
       { title: "Same Tree", lcSlug: "same-tree" },
-      { title: "Binary Tree Zigzag Level Order", lcSlug: "binary-tree-zigzag-level-order-traversal" },
+      {
+        title: "Binary Tree Zigzag Level Order",
+        lcSlug: "binary-tree-zigzag-level-order-traversal",
+      },
       { title: "Lowest Common Ancestor of BT", lcSlug: "lowest-common-ancestor-of-a-binary-tree" },
-      { title: "Construct BT from Preorder and Inorder", lcSlug: "construct-binary-tree-from-preorder-and-inorder-traversal" },
-      { title: "Serialize and Deserialize Binary Tree", lcSlug: "serialize-and-deserialize-binary-tree" },
+      {
+        title: "Construct BT from Preorder and Inorder",
+        lcSlug: "construct-binary-tree-from-preorder-and-inorder-traversal",
+      },
+      {
+        title: "Serialize and Deserialize Binary Tree",
+        lcSlug: "serialize-and-deserialize-binary-tree",
+      },
     ],
   },
   {
@@ -168,7 +186,10 @@ export const STRIVER_SDE_SHEET: StriverSection[] = [
       { title: "Course Schedule II", lcSlug: "course-schedule-ii" },
       { title: "Word Ladder", lcSlug: "word-ladder" },
       { title: "Network Delay Time (Dijkstra)", lcSlug: "network-delay-time" },
-      { title: "Cheapest Flights Within K Stops (Bellman-Ford)", lcSlug: "cheapest-flights-within-k-stops" },
+      {
+        title: "Cheapest Flights Within K Stops (Bellman-Ford)",
+        lcSlug: "cheapest-flights-within-k-stops",
+      },
     ],
   },
   {
@@ -182,7 +203,10 @@ export const STRIVER_SDE_SHEET: StriverSection[] = [
       { title: "Longest Common Subsequence", lcSlug: "longest-common-subsequence" },
       { title: "Word Break", lcSlug: "word-break" },
       { title: "Partition Equal Subset Sum", lcSlug: "partition-equal-subset-sum" },
-      { title: "Best Time to Buy and Sell Stock III", lcSlug: "best-time-to-buy-and-sell-stock-iii" },
+      {
+        title: "Best Time to Buy and Sell Stock III",
+        lcSlug: "best-time-to-buy-and-sell-stock-iii",
+      },
       { title: "Burst Balloons", lcSlug: "burst-balloons" },
       { title: "Maximum Product Subarray", lcSlug: "maximum-product-subarray" },
     ],

@@ -25,9 +25,7 @@ interface Props {
 
 export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props) {
   const [pending, startTransition] = useTransition();
-  const [verifyToken, setVerifyToken] = useState<string | null>(
-    handle?.verifyToken ?? null
-  );
+  const [verifyToken, setVerifyToken] = useState<string | null>(handle?.verifyToken ?? null);
   const [input, setInput] = useState(handle?.handle ?? "");
   const [justVerified, setJustVerified] = useState(false);
 
@@ -94,9 +92,7 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
           <Input
             id={`${platform}-handle`}
             name="handle"
-            placeholder={
-              platform === "LEETCODE" ? "your_lc_username" : "your_cf_handle"
-            }
+            placeholder={platform === "LEETCODE" ? "your_lc_username" : "your_cf_handle"}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             autoComplete="off"
@@ -109,25 +105,18 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
       </form>
 
       {verified && (
-        <div className="flex items-center justify-between rounded-md border bg-card p-3 text-sm">
+        <div className="bg-card flex items-center justify-between rounded-md border p-3 text-sm">
           <div className="flex items-center gap-2">
             <Badge variant="success" className="gap-1">
               <Check className="h-3 w-3" /> Verified
             </Badge>
             <span className="text-muted-foreground">
               Last synced{" "}
-              {handle?.lastSyncedAt
-                ? formatInTimezone(handle.lastSyncedAt, timezone)
-                : "never"}
+              {handle?.lastSyncedAt ? formatInTimezone(handle.lastSyncedAt, timezone) : "never"}
             </span>
           </div>
           <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onResync}
-              disabled={pending}
-            >
+            <Button size="sm" variant="outline" onClick={onResync} disabled={pending}>
               {pending ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
@@ -135,12 +124,7 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
               )}{" "}
               Sync now
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={onRemove}
-              disabled={pending}
-            >
+            <Button size="sm" variant="ghost" onClick={onRemove} disabled={pending}>
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -150,15 +134,11 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
       {verified && justVerified && (
         <div className="flex items-start justify-between gap-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm">
           <div className="space-y-2">
-            <p className="font-medium">
-              Cleanup tip — you can remove the token now.
-            </p>
+            <p className="font-medium">Cleanup tip — you can remove the token now.</p>
             <p className="text-muted-foreground">
               Your dsapv-… token is still in your{" "}
-              {platform === "CODEFORCES"
-                ? "Codeforces First Name"
-                : "LeetCode bio"}
-              . It is safe to delete; we won&apos;t need it again.
+              {platform === "CODEFORCES" ? "Codeforces First Name" : "LeetCode bio"}. It is safe to
+              delete; we won&apos;t need it again.
             </p>
             <Button asChild size="sm" variant="outline">
               <a
@@ -170,8 +150,7 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Open{" "}
-                {platform === "CODEFORCES" ? "Codeforces" : "LeetCode"} settings
+                Open {platform === "CODEFORCES" ? "Codeforces" : "LeetCode"} settings
               </a>
             </Button>
           </div>
@@ -189,10 +168,9 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
       {hasUnverified && verifyToken && (
         <div className="space-y-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm">
           <p className="font-medium">Verification required</p>
-          <ol className="ml-4 list-decimal space-y-1 text-muted-foreground">
+          <ol className="text-muted-foreground ml-4 list-decimal space-y-1">
             <li>
-              Copy the token below and paste it into your <b>{fieldName}</b>{" "}
-              on{" "}
+              Copy the token below and paste it into your <b>{fieldName}</b> on{" "}
               <a
                 href={
                   platform === "CODEFORCES"
@@ -203,16 +181,14 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
                 rel="noopener noreferrer"
                 className="underline"
               >
-                {platform === "CODEFORCES"
-                  ? "codeforces.com"
-                  : "leetcode.com"}
+                {platform === "CODEFORCES" ? "codeforces.com" : "leetcode.com"}
               </a>
               .
             </li>
             <li>Save the change on the platform.</li>
             <li>Click &quot;Verify&quot; below.</li>
           </ol>
-          <div className="flex items-center gap-2 rounded bg-background px-2 py-1 font-mono text-xs">
+          <div className="bg-background flex items-center gap-2 rounded px-2 py-1 font-mono text-xs">
             <code className="flex-1">{verifyToken}</code>
             <Button
               size="icon"
@@ -234,9 +210,8 @@ export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props
               Cancel
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            After we verify, you can remove the token from your profile if you
-            like.
+          <p className="text-muted-foreground text-xs">
+            After we verify, you can remove the token from your profile if you like.
           </p>
         </div>
       )}

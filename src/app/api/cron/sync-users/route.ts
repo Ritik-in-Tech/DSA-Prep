@@ -35,9 +35,7 @@ export async function GET(req: Request) {
           userId: ph.userId,
           handle: ph.handle,
           timezone: ph.user.timezone,
-          fromSeconds: ph.lastSyncedAt
-            ? Math.floor(ph.lastSyncedAt.getTime() / 1000)
-            : undefined,
+          fromSeconds: ph.lastSyncedAt ? Math.floor(ph.lastSyncedAt.getTime() / 1000) : undefined,
         });
         cfCount += inserted;
       } else {

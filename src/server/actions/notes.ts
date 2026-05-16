@@ -56,9 +56,7 @@ export async function markSolvedAction(formData: FormData): Promise<SaveNoteResu
   });
   if (!problem) return { ok: false, message: "Problem not found" };
 
-  const today = new Date(
-    new Date().toISOString().slice(0, 10) + "T00:00:00Z"
-  );
+  const today = new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
   const dateKey = today.toISOString().slice(0, 10);
 
   // Dedupe per (user, platform, problem, day) so the same problem can only be

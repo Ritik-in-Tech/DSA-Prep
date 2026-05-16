@@ -7,10 +7,7 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { getUserInfo } from "@/lib/codeforces";
-import {
-  syncLeetCodeUser,
-  verifyLeetCodeBioToken,
-} from "@/server/sync/leetcode";
+import { syncLeetCodeUser, verifyLeetCodeBioToken } from "@/server/sync/leetcode";
 import { syncCodeforcesUser } from "@/server/sync/codeforces";
 
 const HandleSchema = z.object({

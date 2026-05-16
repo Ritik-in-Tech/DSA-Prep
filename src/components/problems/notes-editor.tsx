@@ -15,13 +15,7 @@ const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
   loading: () => <Skeleton className="h-64 w-full" />,
 });
 
-export function NotesEditor({
-  problemId,
-  initial,
-}: {
-  problemId: string;
-  initial: string;
-}) {
+export function NotesEditor({ problemId, initial }: { problemId: string; initial: string }) {
   const [value, setValue] = useState<string>(initial ?? "");
   const [pending, startTransition] = useTransition();
 

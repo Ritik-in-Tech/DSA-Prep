@@ -27,7 +27,7 @@ export function DifficultyBadge({
       className={cn(
         "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
         STYLES[difficulty],
-        className
+        className,
       )}
     >
       {LABEL[difficulty]}
@@ -38,26 +38,23 @@ export function DifficultyBadge({
 export function RatingBadge({ rating }: { rating?: number | null }) {
   if (rating == null)
     return (
-      <span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+      <span className="bg-muted text-muted-foreground inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium">
         unrated
       </span>
     );
   let color = "bg-slate-500/15 text-slate-700 dark:text-slate-300";
   if (rating < 1200) color = "bg-zinc-500/15 text-zinc-700 dark:text-zinc-300";
-  else if (rating < 1400)
-    color = "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
+  else if (rating < 1400) color = "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
   else if (rating < 1600) color = "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300";
   else if (rating < 1900) color = "bg-blue-500/15 text-blue-700 dark:text-blue-300";
-  else if (rating < 2100)
-    color = "bg-violet-500/15 text-violet-700 dark:text-violet-300";
-  else if (rating < 2400)
-    color = "bg-orange-500/15 text-orange-700 dark:text-orange-300";
+  else if (rating < 2100) color = "bg-violet-500/15 text-violet-700 dark:text-violet-300";
+  else if (rating < 2400) color = "bg-orange-500/15 text-orange-700 dark:text-orange-300";
   else color = "bg-red-500/15 text-red-700 dark:text-red-300";
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-mono font-medium",
-        color
+        "inline-flex items-center rounded-md px-2 py-0.5 font-mono text-xs font-medium",
+        color,
       )}
     >
       {rating}

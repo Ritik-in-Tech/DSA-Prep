@@ -3,13 +3,7 @@ import { listProblems, listTopicsByPlatform } from "@/server/services/problems";
 import { CodeforcesFilters } from "@/components/problems/codeforces-filters";
 import { ProblemRow } from "@/components/problems/problem-row";
 import { Pagination } from "@/components/problems/pagination";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const metadata = { title: "Codeforces problems — DSA Prep" };
 
@@ -37,8 +31,7 @@ export default async function CodeforcesProblemsPage({
   const topicSlugs = parseTopics(sp.topics);
   const ratingMin = num(sp.rmin) ?? 800;
   const ratingMax = num(sp.rmax) ?? 3500;
-  const solvedStatus =
-    sp.solved === "yes" ? "SOLVED" : sp.solved === "no" ? "UNSOLVED" : "ALL";
+  const solvedStatus = sp.solved === "yes" ? "SOLVED" : sp.solved === "no" ? "UNSOLVED" : "ALL";
 
   const [topics, result] = await Promise.all([
     listTopicsByPlatform("CODEFORCES"),
@@ -59,8 +52,9 @@ export default async function CodeforcesProblemsPage({
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Codeforces</h1>
-        <p className="text-sm text-muted-foreground">
-          Browse problems by rating range and tags. {result.total.toLocaleString()} problems indexed.
+        <p className="text-muted-foreground text-sm">
+          Browse problems by rating range and tags. {result.total.toLocaleString()} problems
+          indexed.
         </p>
       </div>
 
@@ -76,7 +70,7 @@ export default async function CodeforcesProblemsPage({
       />
 
       {result.items.length === 0 ? (
-        <div className="rounded-md border p-8 text-center text-sm text-muted-foreground">
+        <div className="text-muted-foreground rounded-md border p-8 text-center text-sm">
           No problems match these filters.
         </div>
       ) : (

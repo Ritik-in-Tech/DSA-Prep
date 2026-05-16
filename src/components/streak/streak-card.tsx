@@ -1,11 +1,5 @@
 import { Flame, Trophy } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -50,27 +44,20 @@ export function StreakCard({ current, longest, todaySolved, last30Days }: Props)
           </CardDescription>
         </div>
         <Flame
-          className={cn(
-            "h-6 w-6",
-            current > 0 ? "text-orange-500" : "text-muted-foreground"
-          )}
+          className={cn("h-6 w-6", current > 0 ? "text-orange-500" : "text-muted-foreground")}
         />
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-3xl font-bold">{current}</p>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-              Current streak
-            </p>
+            <p className="text-muted-foreground text-xs tracking-wide uppercase">Current streak</p>
           </div>
           <div className="flex items-center gap-2">
             <Trophy className="h-4 w-4 text-amber-500" />
             <div>
               <p className="text-lg font-semibold">{longest}</p>
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                Longest
-              </p>
+              <p className="text-muted-foreground text-[10px] tracking-wide uppercase">Longest</p>
             </div>
           </div>
         </div>

@@ -17,7 +17,7 @@ function dayDate(d: Date, timezone = "UTC"): Date {
 export async function recordAcSolves(
   userId: string,
   acSubmittedAt: Date[],
-  timezone = "UTC"
+  timezone = "UTC",
 ): Promise<void> {
   if (acSubmittedAt.length === 0) return;
   const buckets = new Map<string, number>();
@@ -43,10 +43,7 @@ export interface StreakInfo {
   last30Days: { date: string; solvedCount: number }[];
 }
 
-export async function computeStreak(
-  userId: string,
-  timezone = "UTC"
-): Promise<StreakInfo> {
+export async function computeStreak(userId: string, timezone = "UTC"): Promise<StreakInfo> {
   const days = await prisma.streakDay.findMany({
     where: { userId },
     orderBy: { date: "desc" },
@@ -59,14 +56,9 @@ export async function computeStreak(
 
   const now = new Date();
   const todayKey = dayKey(now, timezone);
-  const yesterdayKey = dayKey(
-    new Date(now.getTime() - 24 * 3600 * 1000),
-    timezone
-  );
+  const yesterdayKey = dayKey(new Date(now.getTime() - 24 * 3600 * 1000), timezone);
 
-  const map = new Map(
-    days.map((d) => [dayKey(d.date, "UTC"), d.solvedCount] as const)
-  );
+  const map = new Map(days.map((d) => [dayKey(d.date, "UTC"), d.solvedCount] as const));
 
   const todaySolved = map.get(todayKey) ?? 0;
 

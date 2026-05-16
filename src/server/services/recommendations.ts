@@ -28,9 +28,7 @@ export async function recommendForUser(userId: string): Promise<{
       platform: "LEETCODE",
       isPremium: false,
       id: { notIn: solvedProblemIds },
-      ...(weakestTopicId
-        ? { topics: { some: { topicId: weakestTopicId } } }
-        : {}),
+      ...(weakestTopicId ? { topics: { some: { topicId: weakestTopicId } } } : {}),
     },
     include: { topics: { include: { topic: true } } },
     orderBy: { externalId: "asc" },

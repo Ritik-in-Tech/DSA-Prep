@@ -1,8 +1,5 @@
 import { prisma } from "@/lib/db";
-import {
-  syncLeetCodeCatalog,
-  syncLeetCodeContests,
-} from "@/server/sync/leetcode";
+import { syncLeetCodeCatalog, syncLeetCodeContests } from "@/server/sync/leetcode";
 
 async function main() {
   const t0 = Date.now();

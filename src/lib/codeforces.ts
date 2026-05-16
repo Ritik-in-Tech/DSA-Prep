@@ -69,12 +69,7 @@ export interface CfContest {
   id: number;
   name: string;
   type: "CF" | "IOI" | "ICPC";
-  phase:
-    | "BEFORE"
-    | "CODING"
-    | "PENDING_SYSTEM_TEST"
-    | "SYSTEM_TEST"
-    | "FINISHED";
+  phase: "BEFORE" | "CODING" | "PENDING_SYSTEM_TEST" | "SYSTEM_TEST" | "FINISHED";
   frozen: boolean;
   durationSeconds: number;
   startTimeSeconds?: number;
@@ -91,7 +86,7 @@ interface CfResponse<T> {
 async function cfFetch<T>(
   endpoint: string,
   params: Record<string, string | number | boolean | undefined> = {},
-  init: RequestInit = {}
+  init: RequestInit = {},
 ): Promise<T> {
   const url = new URL(`${BASE}/${endpoint}`);
   for (const [k, v] of Object.entries(params)) {
@@ -129,9 +124,7 @@ async function cfFetch<T>(
       await sleep(wait);
     }
   }
-  throw lastError instanceof Error
-    ? lastError
-    : new Error(`Codeforces ${endpoint}: unknown error`);
+  throw lastError instanceof Error ? lastError : new Error(`Codeforces ${endpoint}: unknown error`);
 }
 
 export async function getProblemset(): Promise<{
@@ -154,31 +147,23 @@ export async function getUserInfo(handles: string[]): Promise<CfUserInfo[]> {
 
 export async function getUserStatus(
   handle: string,
-  options: { from?: number; count?: number } = {}
+  options: { from?: number; count?: number } = {},
 ): Promise<CfSubmission[]> {
   const { from = 1, count = 1000 } = options;
   return cfFetch<CfSubmission[]>("user.status", { handle, from, count });
 }
 
-export async function getContestList(
-  gym = false
-): Promise<CfContest[]> {
+export async function getContestList(gym = false): Promise<CfContest[]> {
   return cfFetch<CfContest[]>("contest.list", { gym });
 }
 
-export function cfProblemUrl(problem: {
-  contestId?: number | null;
-  index: string;
-}): string {
+export function cfProblemUrl(problem: { contestId?: number | null; index: string }): string {
   if (problem.contestId == null) {
     return `https://codeforces.com/problemset/problem/${problem.index}`;
   }
   return `https://codeforces.com/contest/${problem.contestId}/problem/${problem.index}`;
 }
 
-export function cfExternalId(problem: {
-  contestId?: number | null;
-  index: string;
-}): string {
+export function cfExternalId(problem: { contestId?: number | null; index: string }): string {
   return `${problem.contestId ?? "PS"}-${problem.index}`;
 }

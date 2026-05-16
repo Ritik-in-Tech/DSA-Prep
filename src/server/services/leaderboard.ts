@@ -3,9 +3,7 @@ import { prisma } from "@/lib/db";
 function startOfWeekUtc(d: Date = new Date()): Date {
   const day = d.getUTCDay();
   const diff = (day + 6) % 7;
-  const monday = new Date(
-    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - diff)
-  );
+  const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - diff));
   return monday;
 }
 

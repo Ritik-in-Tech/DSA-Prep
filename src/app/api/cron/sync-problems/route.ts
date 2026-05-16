@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
-import {
-  syncCodeforcesCatalog,
-  syncCodeforcesContests,
-} from "@/server/sync/codeforces";
-import {
-  syncLeetCodeCatalog,
-  syncLeetCodeContests,
-} from "@/server/sync/leetcode";
+import { syncCodeforcesCatalog, syncCodeforcesContests } from "@/server/sync/codeforces";
+import { syncLeetCodeCatalog, syncLeetCodeContests } from "@/server/sync/leetcode";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -40,7 +34,7 @@ export async function GET(req: Request) {
   } catch (err) {
     return NextResponse.json(
       { ok: false, error: err instanceof Error ? err.message : "failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

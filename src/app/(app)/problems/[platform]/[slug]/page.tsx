@@ -6,18 +6,9 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  DifficultyBadge,
-  RatingBadge,
-} from "@/components/problems/difficulty-badge";
+import { DifficultyBadge, RatingBadge } from "@/components/problems/difficulty-badge";
 import { NotesEditor } from "@/components/problems/notes-editor";
 import { MarkSolvedButton } from "@/components/problems/mark-solved-button";
 
@@ -70,7 +61,7 @@ export default async function ProblemDetailPage({
       <div className="flex items-center gap-2 text-sm">
         <Link
           href={`/problems/${platform.toLowerCase()}`}
-          className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
         >
           <ArrowLeft className="h-3 w-3" />
           Back to {platform === "LEETCODE" ? "LeetCode" : "Codeforces"}
@@ -83,7 +74,7 @@ export default async function ProblemDetailPage({
             <div className="space-y-2">
               <CardTitle className="text-2xl">{problem.title}</CardTitle>
               <CardDescription className="flex flex-wrap items-center gap-2">
-                <span className="text-xs uppercase tracking-wide">
+                <span className="text-xs tracking-wide uppercase">
                   {platform === "LEETCODE" ? "LeetCode" : "Codeforces"}
                 </span>
                 <span className="text-xs">·</span>
@@ -105,18 +96,12 @@ export default async function ProblemDetailPage({
             </div>
             <div className="flex flex-col gap-2">
               <Button asChild size="lg">
-                <a
-                  href={problem.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={problem.url} target="_blank" rel="noopener noreferrer">
                   Solve on {platform === "LEETCODE" ? "LeetCode" : "Codeforces"}{" "}
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
-              {session?.user && !isSolved && (
-                <MarkSolvedButton problemId={problem.id} />
-              )}
+              {session?.user && !isSolved && <MarkSolvedButton problemId={problem.id} />}
             </div>
           </div>
         </CardHeader>
@@ -126,22 +111,14 @@ export default async function ProblemDetailPage({
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle className="text-lg">Your notes</CardTitle>
-            <CardDescription>
-              Markdown supported. Stored privately on your account.
-            </CardDescription>
+            <CardDescription>Markdown supported. Stored privately on your account.</CardDescription>
           </CardHeader>
           <CardContent>
             {session?.user ? (
-              <NotesEditor
-                problemId={problem.id}
-                initial={note?.contentMd ?? ""}
-              />
+              <NotesEditor problemId={problem.id} initial={note?.contentMd ?? ""} />
             ) : (
-              <p className="text-sm text-muted-foreground">
-                <Link
-                  href="/sign-in"
-                  className="underline-offset-4 hover:underline"
-                >
+              <p className="text-muted-foreground text-sm">
+                <Link href="/sign-in" className="underline-offset-4 hover:underline">
                   Sign in
                 </Link>{" "}
                 to take notes.
@@ -176,13 +153,11 @@ export default async function ProblemDetailPage({
                     {s.submittedAt.toLocaleDateString()}
                   </span>
                 </div>
-                {s.language && (
-                  <span className="text-muted-foreground">{s.language}</span>
-                )}
+                {s.language && <span className="text-muted-foreground">{s.language}</span>}
               </div>
             ))}
             {submissions.length === 0 && session?.user && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Sync your handle in{" "}
                 <Link href="/profile/settings" className="underline">
                   settings
@@ -196,9 +171,9 @@ export default async function ProblemDetailPage({
 
       <Separator />
 
-      <p className="text-xs text-muted-foreground">
-        Problem statement and tests are hosted on the original platform. We only
-        store metadata and your personal notes.
+      <p className="text-muted-foreground text-xs">
+        Problem statement and tests are hosted on the original platform. We only store metadata and
+        your personal notes.
       </p>
     </div>
   );

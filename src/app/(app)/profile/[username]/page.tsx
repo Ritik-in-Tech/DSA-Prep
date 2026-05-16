@@ -1,12 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { computeStreak } from "@/server/services/streak";
@@ -64,9 +58,7 @@ export default async function PublicProfilePage({
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-2xl">
-                {user.name ?? user.username}
-              </CardTitle>
+              <CardTitle className="text-2xl">{user.name ?? user.username}</CardTitle>
               <CardDescription>@{user.username}</CardDescription>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {handles.map((h) => (
@@ -97,7 +89,7 @@ export default async function PublicProfilePage({
             </Badge>
           ))}
           {byPlatform.length === 0 && (
-            <p className="text-sm text-muted-foreground">No solves yet.</p>
+            <p className="text-muted-foreground text-sm">No solves yet.</p>
           )}
         </CardContent>
       </Card>
@@ -105,9 +97,7 @@ export default async function PublicProfilePage({
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Top topics</CardTitle>
-          <CardDescription>
-            Topics covered by your AC submissions.
-          </CardDescription>
+          <CardDescription>Topics covered by your AC submissions.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
           {byTopic.map((t) => {
@@ -120,7 +110,7 @@ export default async function PublicProfilePage({
             );
           })}
           {byTopic.length === 0 && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Solve a few problems to populate this section.
             </p>
           )}

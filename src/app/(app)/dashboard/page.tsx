@@ -7,20 +7,11 @@ import { prisma } from "@/lib/db";
 import { formatInTimezone } from "@/lib/utils";
 import { computeStreak } from "@/server/services/streak";
 import { recommendForUser } from "@/server/services/recommendations";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StreakCard } from "@/components/streak/streak-card";
-import {
-  DifficultyBadge,
-  RatingBadge,
-} from "@/components/problems/difficulty-badge";
+import { DifficultyBadge, RatingBadge } from "@/components/problems/difficulty-badge";
 
 export const metadata = { title: "Dashboard — DSA Prep" };
 
@@ -62,7 +53,7 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-semibold tracking-tight">
           Hi {user?.name?.split(" ")[0] ?? "there"} 👋
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Your DSA dashboard. Streak, recommendations, recent activity.
         </p>
       </div>
@@ -71,12 +62,10 @@ export default async function DashboardPage() {
         <Card className="border-amber-500/30 bg-amber-500/5">
           <CardContent className="flex items-center justify-between gap-4 p-4">
             <div>
-              <p className="text-sm font-medium">
-                Connect your LeetCode or Codeforces account
-              </p>
-              <p className="text-xs text-muted-foreground">
-                We&apos;ll automatically track your streak, sync solved
-                problems, and recommend next problems.
+              <p className="text-sm font-medium">Connect your LeetCode or Codeforces account</p>
+              <p className="text-muted-foreground text-xs">
+                We&apos;ll automatically track your streak, sync solved problems, and recommend next
+                problems.
               </p>
             </div>
             <Button asChild>
@@ -98,22 +87,15 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Recent activity
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Recent activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {recent.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                No submissions yet.
-              </p>
+              <p className="text-muted-foreground text-sm">No submissions yet.</p>
             )}
             {recent.map((s) => (
-              <div
-                key={s.id}
-                className="flex items-center justify-between gap-2 text-sm"
-              >
-                <div className="flex items-center gap-2 min-w-0">
+              <div key={s.id} className="flex items-center justify-between gap-2 text-sm">
+                <div className="flex min-w-0 items-center gap-2">
                   <Badge
                     variant={s.verdict === "AC" ? "success" : "outline"}
                     className="text-[10px]"
@@ -127,7 +109,7 @@ export default async function DashboardPage() {
                     {s.problem.title}
                   </Link>
                 </div>
-                <span className="shrink-0 text-xs text-muted-foreground">
+                <span className="text-muted-foreground shrink-0 text-xs">
                   {s.submittedAt.toLocaleDateString()}
                 </span>
               </div>
@@ -157,16 +139,13 @@ export default async function DashboardPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-sm font-medium">Upcoming contests</CardTitle>
-          <Link
-            href="/contests"
-            className="text-xs text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/contests" className="text-muted-foreground hover:text-foreground text-xs">
             View all →
           </Link>
         </CardHeader>
         <CardContent className="space-y-2">
           {upcoming.length === 0 && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Nothing scheduled. Seed contests with the cron job.
             </p>
           )}
@@ -176,15 +155,15 @@ export default async function DashboardPage() {
               href={c.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-2 rounded-md border p-2 text-sm hover:bg-accent"
+              className="hover:bg-accent flex items-center justify-between gap-2 rounded-md border p-2 text-sm"
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <CalendarClock className="h-4 w-4 text-muted-foreground" />
+              <div className="flex min-w-0 items-center gap-2">
+                <CalendarClock className="text-muted-foreground h-4 w-4" />
                 <span className="truncate">{c.name}</span>
               </div>
               <time
                 dateTime={c.startsAt.toISOString()}
-                className="shrink-0 text-xs text-muted-foreground"
+                className="text-muted-foreground shrink-0 text-xs"
               >
                 {formatInTimezone(c.startsAt, tz)}
               </time>
@@ -215,7 +194,7 @@ function RecoCard({
         <CardTitle className="text-base">{problem.title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground text-xs">{description}</p>
         <div className="flex flex-wrap items-center gap-1.5">
           {showRating ? (
             <RatingBadge rating={problem.rating} />
@@ -235,9 +214,7 @@ function RecoCard({
             </a>
           </Button>
           <Button asChild size="sm" variant="outline">
-            <Link
-              href={`/problems/${problem.platform.toLowerCase()}/${problem.slug}`}
-            >
+            <Link href={`/problems/${problem.platform.toLowerCase()}/${problem.slug}`}>
               Details
             </Link>
           </Button>

@@ -3,13 +3,7 @@ import { redirect } from "next/navigation";
 import { signIn, auth } from "@/auth";
 import { hasGithubAuth, hasGoogleAuth } from "@/lib/env";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata = {
   title: "Sign in — DSA Prep",
@@ -72,19 +66,14 @@ export default async function SignInPage({
             </form>
           )}
           {!hasGoogleAuth && !hasGithubAuth && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               No OAuth providers are configured. Set{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                AUTH_GOOGLE_ID
-              </code>
-              /{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                AUTH_GITHUB_ID
-              </code>{" "}
-              in <code>.env</code>.
+              <code className="bg-muted rounded px-1 py-0.5 text-xs">AUTH_GOOGLE_ID</code>/{" "}
+              <code className="bg-muted rounded px-1 py-0.5 text-xs">AUTH_GITHUB_ID</code> in{" "}
+              <code>.env</code>.
             </p>
           )}
-          <p className="pt-3 text-center text-xs text-muted-foreground">
+          <p className="text-muted-foreground pt-3 text-center text-xs">
             <Link href="/" className="underline-offset-4 hover:underline">
               Back to home
             </Link>

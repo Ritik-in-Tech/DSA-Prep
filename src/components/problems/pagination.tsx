@@ -24,7 +24,7 @@ export function Pagination({
 
   return (
     <div className="flex items-center justify-between pt-4">
-      <p className="text-sm text-muted-foreground">
+      <p className="text-muted-foreground text-sm">
         Page {page} of {pages}
       </p>
       <div className="flex gap-2">

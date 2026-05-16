@@ -9,10 +9,7 @@
  */
 import { prisma } from "@/lib/db";
 import { syncCodeforcesCatalog, syncCodeforcesContests } from "@/server/sync/codeforces";
-import {
-  syncLeetCodeCatalog,
-  syncLeetCodeContests,
-} from "@/server/sync/leetcode";
+import { syncLeetCodeCatalog, syncLeetCodeContests } from "@/server/sync/leetcode";
 import { STRIVER_SDE_SHEET } from "./data/striver-sde-sheet";
 import { NEETCODE_150 } from "./data/neetcode-150";
 import { seedSheet } from "./lib/seed-sheet";

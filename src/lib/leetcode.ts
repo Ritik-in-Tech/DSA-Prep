@@ -16,14 +16,10 @@ const LC_HEADERS: HeadersInit = {
   accept: "application/json",
   origin: "https://leetcode.com",
   referer: "https://leetcode.com/",
-  "user-agent":
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 dsa-prep/1.0",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 dsa-prep/1.0",
 };
 
-async function lcQuery<T>(
-  query: string,
-  variables: Record<string, unknown> = {}
-): Promise<T> {
+async function lcQuery<T>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
   const MAX_RETRIES = 4;
   let lastError: unknown;
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
@@ -55,9 +51,7 @@ async function lcQuery<T>(
       await sleep(wait);
     }
   }
-  throw lastError instanceof Error
-    ? lastError
-    : new Error("LeetCode GraphQL: unknown error");
+  throw lastError instanceof Error ? lastError : new Error("LeetCode GraphQL: unknown error");
 }
 
 // ---------- Problemset catalog ----------
@@ -132,15 +126,12 @@ export async function getProblemList(options: {
   if (tags && tags.length > 0) filters.tags = tags;
   if (search) filters.searchKeywords = search;
 
-  const data = await lcQuery<ProblemsetQuestionListResponse>(
-    QUESTION_LIST_QUERY,
-    {
-      categorySlug: "",
-      skip,
-      limit,
-      filters,
-    }
-  );
+  const data = await lcQuery<ProblemsetQuestionListResponse>(QUESTION_LIST_QUERY, {
+    categorySlug: "",
+    skip,
+    limit,
+    filters,
+  });
   return data.problemsetQuestionList;
 }
 
@@ -170,12 +161,12 @@ const RECENT_AC_QUERY = /* GraphQL */ `
 
 export async function getRecentAcSubmissions(
   username: string,
-  limit = 20
+  limit = 20,
 ): Promise<LcSubmission[]> {
-  const data = await lcQuery<{ recentAcSubmissionList: LcSubmission[] }>(
-    RECENT_AC_QUERY,
-    { username, limit }
-  );
+  const data = await lcQuery<{ recentAcSubmissionList: LcSubmission[] }>(RECENT_AC_QUERY, {
+    username,
+    limit,
+  });
   return data.recentAcSubmissionList ?? [];
 }
 
@@ -217,9 +208,7 @@ const MATCHED_USER_QUERY = /* GraphQL */ `
   }
 `;
 
-export async function getUserStats(
-  username: string
-): Promise<LcUserStats | null> {
+export async function getUserStats(username: string): Promise<LcUserStats | null> {
   type ApiUser = {
     matchedUser:
       | (Omit<LcUserStats, "realName" | "aboutMe" | "userAvatar" | "ranking"> & {
@@ -281,9 +270,7 @@ const UPCOMING_CONTESTS_QUERY = /* GraphQL */ `
 `;
 
 export async function getUpcomingLeetCodeContests(): Promise<LcContest[]> {
-  const data = await lcQuery<{ upcomingContests: LcContest[] | null }>(
-    UPCOMING_CONTESTS_QUERY
-  );
+  const data = await lcQuery<{ upcomingContests: LcContest[] | null }>(UPCOMING_CONTESTS_QUERY);
   return data.upcomingContests ?? [];
 }
 

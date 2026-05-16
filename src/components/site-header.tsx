@@ -28,7 +28,7 @@ export async function SiteHeader() {
   const session = await auth();
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <header className="bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <Code2 className="h-5 w-5" />
@@ -39,7 +39,7 @@ export async function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
               {item.label}
             </Link>
@@ -57,21 +57,15 @@ export async function SiteHeader() {
                       alt={session.user.name ?? "user"}
                     />
                     <AvatarFallback>
-                      {(session.user.name ?? session.user.email ?? "U")
-                        .slice(0, 1)
-                        .toUpperCase()}
+                      {(session.user.name ?? session.user.email ?? "U").slice(0, 1).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {session.user.name ?? "User"}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {session.user.email}
-                  </span>
+                  <span className="text-sm font-medium">{session.user.name ?? "User"}</span>
+                  <span className="text-muted-foreground text-xs">{session.user.email}</span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -79,9 +73,7 @@ export async function SiteHeader() {
                 </DropdownMenuItem>
                 {session.user.username && (
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${session.user.username}`}>
-                      Public profile
-                    </Link>
+                    <Link href={`/profile/${session.user.username}`}>Public profile</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />

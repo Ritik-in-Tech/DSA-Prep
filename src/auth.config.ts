@@ -11,7 +11,7 @@ if (hasGoogleAuth) {
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
-    })
+    }),
   );
 }
 if (hasGithubAuth) {
@@ -20,7 +20,7 @@ if (hasGithubAuth) {
       clientId: env.AUTH_GITHUB_ID,
       clientSecret: env.AUTH_GITHUB_SECRET,
       allowDangerousEmailAccountLinking: true,
-    })
+    }),
   );
 }
 
@@ -41,8 +41,7 @@ export const authConfig = {
     async session({ session, token }) {
       if (session.user && token) {
         session.user.id = (token.id as string) ?? session.user.id;
-        session.user.username =
-          (token.username as string | null | undefined) ?? null;
+        session.user.username = (token.username as string | null | undefined) ?? null;
       }
       return session;
     },

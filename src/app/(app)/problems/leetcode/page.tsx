@@ -3,13 +3,7 @@ import { listProblems, listTopicsByPlatform } from "@/server/services/problems";
 import { LeetCodeFilters } from "@/components/problems/leetcode-filters";
 import { ProblemRow } from "@/components/problems/problem-row";
 import { Pagination } from "@/components/problems/pagination";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const metadata = { title: "LeetCode problems — DSA Prep" };
 
@@ -38,8 +32,7 @@ export default async function LeetCodeProblemsPage({
   const search = typeof sp.q === "string" ? sp.q : undefined;
   const difficulties = parseDifficulties(sp.diff);
   const topicSlugs = parseTopics(sp.topics);
-  const solvedStatus =
-    sp.solved === "yes" ? "SOLVED" : sp.solved === "no" ? "UNSOLVED" : "ALL";
+  const solvedStatus = sp.solved === "yes" ? "SOLVED" : sp.solved === "no" ? "UNSOLVED" : "ALL";
 
   const [topics, result] = await Promise.all([
     listTopicsByPlatform("LEETCODE"),
@@ -59,7 +52,7 @@ export default async function LeetCodeProblemsPage({
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">LeetCode</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Browse problems by topic and difficulty. {result.total.toLocaleString()} problems indexed.
         </p>
       </div>
@@ -75,9 +68,10 @@ export default async function LeetCodeProblemsPage({
       />
 
       {result.items.length === 0 ? (
-        <div className="rounded-md border p-8 text-center text-sm text-muted-foreground">
+        <div className="text-muted-foreground rounded-md border p-8 text-center text-sm">
           No problems match these filters. Try clearing them, or run{" "}
-          <code className="rounded bg-muted px-1 py-0.5">pnpm db:seed</code> if the catalog is empty.
+          <code className="bg-muted rounded px-1 py-0.5">pnpm db:seed</code> if the catalog is
+          empty.
         </div>
       ) : (
         <div className="rounded-md border">

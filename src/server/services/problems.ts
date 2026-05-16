@@ -69,9 +69,7 @@ export async function listProblems(args: ListProblemsArgs) {
         topics: { include: { topic: true } },
       },
       orderBy:
-        platform === "CODEFORCES"
-          ? [{ rating: "asc" }, { title: "asc" }]
-          : [{ externalId: "asc" }],
+        platform === "CODEFORCES" ? [{ rating: "asc" }, { title: "asc" }] : [{ externalId: "asc" }],
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),

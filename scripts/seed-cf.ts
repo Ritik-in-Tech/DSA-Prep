@@ -1,8 +1,5 @@
 import { prisma } from "@/lib/db";
-import {
-  syncCodeforcesCatalog,
-  syncCodeforcesContests,
-} from "@/server/sync/codeforces";
+import { syncCodeforcesCatalog, syncCodeforcesContests } from "@/server/sync/codeforces";
 
 async function main() {
   const t0 = Date.now();

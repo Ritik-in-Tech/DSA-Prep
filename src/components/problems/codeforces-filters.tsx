@@ -17,11 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface Props {
   topics: Topic[];
@@ -38,10 +34,7 @@ export function CodeforcesFilters({ topics, initial }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [q, setQ] = useState(initial.q);
-  const [rating, setRating] = useState<[number, number]>([
-    initial.ratingMin,
-    initial.ratingMax,
-  ]);
+  const [rating, setRating] = useState<[number, number]>([initial.ratingMin, initial.ratingMax]);
   const [topicSet, setTopicSet] = useState<Set<string>>(new Set(initial.topicSlugs));
   const [solved, setSolved] = useState(initial.solved);
 
@@ -72,7 +65,7 @@ export function CodeforcesFilters({ topics, initial }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-md border bg-card p-3">
+    <div className="bg-card flex flex-col gap-3 rounded-md border p-3">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -81,7 +74,7 @@ export function CodeforcesFilters({ topics, initial }: Props) {
         className="flex items-center gap-2"
       >
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -130,14 +123,12 @@ export function CodeforcesFilters({ topics, initial }: Props) {
           <PopoverContent className="w-72 p-0">
             <div className="max-h-64 overflow-y-auto p-2">
               {topics.length === 0 ? (
-                <p className="p-2 text-sm text-muted-foreground">
-                  No tags yet — seed first.
-                </p>
+                <p className="text-muted-foreground p-2 text-sm">No tags yet — seed first.</p>
               ) : (
                 topics.map((t) => (
                   <label
                     key={t.id}
-                    className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-accent"
+                    className="hover:bg-accent flex cursor-pointer items-center gap-2 rounded px-2 py-1"
                   >
                     <Checkbox
                       checked={topicSet.has(t.slug)}

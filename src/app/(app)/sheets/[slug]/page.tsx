@@ -12,20 +12,11 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { DifficultyBadge } from "@/components/problems/difficulty-badge";
 
-export default async function SheetDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function SheetDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const session = await auth();
   const sheet = await getSheetWithSections(slug, session?.user?.id ?? null);
@@ -41,16 +32,14 @@ export default async function SheetDetailPage({
             <div>
               <CardTitle className="text-2xl">{sheet.name}</CardTitle>
               {sheet.description && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {sheet.description}
-                </p>
+                <p className="text-muted-foreground mt-1 text-sm">{sheet.description}</p>
               )}
               {sheet.source && (
                 <a
                   href={sheet.source}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground underline-offset-4 hover:underline"
+                  className="text-muted-foreground mt-2 inline-flex items-center gap-1 text-xs underline-offset-4 hover:underline"
                 >
                   Source <ExternalLink className="h-3 w-3" />
                 </a>
@@ -60,7 +49,7 @@ export default async function SheetDetailPage({
               <p className="font-mono text-2xl">
                 {sheet.solved}/{sheet.total}
               </p>
-              <p className="text-xs text-muted-foreground">{pct}% complete</p>
+              <p className="text-muted-foreground text-xs">{pct}% complete</p>
               <div className="pt-2">
                 <Progress value={pct} />
               </div>
@@ -73,11 +62,7 @@ export default async function SheetDetailPage({
         {sheet.sections.map((sec) => {
           const secPct = sec.total === 0 ? 0 : Math.round((sec.solved / sec.total) * 100);
           return (
-            <AccordionItem
-              key={sec.id}
-              value={sec.id}
-              className="rounded-md border px-4"
-            >
+            <AccordionItem key={sec.id} value={sec.id} className="rounded-md border px-4">
               <AccordionTrigger>
                 <div className="flex w-full items-center justify-between pr-3">
                   <span className="font-medium">{sec.name}</span>
@@ -94,15 +79,12 @@ export default async function SheetDetailPage({
               <AccordionContent>
                 <ul className="divide-y">
                   {sec.problems.map((sp) => (
-                    <li
-                      key={sp.id}
-                      className="flex items-center justify-between gap-3 py-2"
-                    >
-                      <div className="flex flex-1 items-center gap-3 min-w-0">
+                    <li key={sp.id} className="flex items-center justify-between gap-3 py-2">
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
                         {sp.isSolved ? (
                           <Check className="h-4 w-4 text-emerald-500" />
                         ) : (
-                          <Circle className="h-4 w-4 text-muted-foreground/40" />
+                          <Circle className="text-muted-foreground/40 h-4 w-4" />
                         )}
                         <Link
                           href={`/problems/${sp.problem.platform.toLowerCase()}/${sp.problem.slug}`}
@@ -113,11 +95,7 @@ export default async function SheetDetailPage({
                         <DifficultyBadge difficulty={sp.problem.difficulty} />
                       </div>
                       <Button asChild size="sm" variant="outline">
-                        <a
-                          href={sp.problem.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <a href={sp.problem.url} target="_blank" rel="noopener noreferrer">
                           Solve <ExternalLink className="h-3 w-3" />
                         </a>
                       </Button>

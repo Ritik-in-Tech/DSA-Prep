@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  Flame,
-  ListTodo,
-  CalendarClock,
-  Trophy,
-  Sparkles,
-  ArrowRight,
-} from "lucide-react";
+import { Flame, ListTodo, CalendarClock, Trophy, Sparkles, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,10 +15,9 @@ export default function Home() {
           <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
             Best DSA prep, organized.
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-balance text-lg text-muted-foreground">
-            Topic-wise LeetCode, rating-wise Codeforces, curated Striver &
-            NeetCode sheets. Sync your accounts, track streaks, beat your
-            longest.
+          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg text-balance">
+            Topic-wise LeetCode, rating-wise Codeforces, curated Striver & NeetCode sheets. Sync
+            your accounts, track streaks, beat your longest.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
@@ -58,20 +50,17 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-3xl px-4 pb-24">
-          <div className="rounded-xl border bg-card p-6">
+          <div className="bg-card rounded-xl border p-6">
             <h2 className="text-xl font-semibold">How &quot;Solve&quot; works</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Every Solve button opens the canonical problem page on LeetCode or
-              Codeforces in a new tab. We don&apos;t re-host the problem statement
-              or your code — your work stays on the source platforms, and we
-              just track your progress and notes.
+            <p className="text-muted-foreground mt-2 text-sm">
+              Every Solve button opens the canonical problem page on LeetCode or Codeforces in a new
+              tab. We don&apos;t re-host the problem statement or your code — your work stays on the
+              source platforms, and we just track your progress and notes.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs">
-              <span className="rounded bg-muted px-2 py-1">No re-hosting</span>
-              <span className="rounded bg-muted px-2 py-1">
-                Public APIs / GraphQL only
-              </span>
-              <span className="rounded bg-muted px-2 py-1">
+              <span className="bg-muted rounded px-2 py-1">No re-hosting</span>
+              <span className="bg-muted rounded px-2 py-1">Public APIs / GraphQL only</span>
+              <span className="bg-muted rounded px-2 py-1">
                 <CalendarClock className="mr-1 inline h-3 w-3" />
                 Contests calendar
               </span>
@@ -80,7 +69,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t py-6 text-center text-xs text-muted-foreground">
+      <footer className="text-muted-foreground border-t py-6 text-center text-xs">
         © {new Date().getFullYear()} DSA Prep ·{" "}
         <a
           href="https://github.com/Ritik-in-Tech/DSA-Prep"
@@ -96,22 +85,14 @@ export default function Home() {
   );
 }
 
-function Feature({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
+function Feature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="rounded-xl border bg-card p-5">
-      <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+    <div className="bg-card rounded-xl border p-5">
+      <div className="bg-muted mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg">
         {icon}
       </div>
       <h3 className="font-medium">{title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+      <p className="text-muted-foreground mt-1 text-sm">{desc}</p>
     </div>
   );
 }

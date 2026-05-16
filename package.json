@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
@@ -15,6 +18,15 @@
     "seed:cf": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-cf.ts",
     "seed:lc": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-lc.ts",
     "seed:sheets": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-sheets.ts"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,mdx,css,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "prisma": {
     "seed": "tsx scripts/seed.ts"
@@ -62,6 +74,11 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.4",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "tsx": "^4.22.0",

@@ -12,7 +12,7 @@ import { sleep, chunk } from "@/lib/utils";
 import { recordAcSolves } from "@/server/services/streak";
 
 export async function syncLeetCodeCatalog(
-  options: { fullSync?: boolean } = {}
+  options: { fullSync?: boolean } = {},
 ): Promise<{ problemsUpserted: number; pages: number }> {
   const limit = 100;
   let skip = 0;
@@ -38,7 +38,7 @@ export async function syncLeetCodeCatalog(
     select: { id: true, externalId: true },
   });
   const existingMap = new Map<string, string>(
-    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id])
+    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id]),
   );
 
   const tagPool = new Map<string, string>();
@@ -50,7 +50,7 @@ export async function syncLeetCodeCatalog(
     select: { id: true, slug: true },
   });
   const topicMap = new Map<string, string>(
-    existingTopics.map((t: { slug: string; id: string }) => [t.slug, t.id])
+    existingTopics.map((t: { slug: string; id: string }) => [t.slug, t.id]),
   );
   const newTopics = Array.from(tagPool.entries())
     .filter(([slug]) => !topicMap.has(slug))
@@ -119,8 +119,8 @@ export async function syncLeetCodeCatalog(
             isPremium: q.isPaidOnly,
             metadata: { acRate: q.acRate ?? null, titleSlug: q.titleSlug },
           },
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -148,7 +148,7 @@ export async function syncLeetCodeUser(args: {
     select: { id: true, slug: true },
   });
   const problemMap = new Map<string, string>(
-    problems.map((p: { slug: string; id: string }) => [p.slug, p.id])
+    problems.map((p: { slug: string; id: string }) => [p.slug, p.id]),
   );
 
   const acDates: Date[] = [];
@@ -192,10 +192,7 @@ export async function syncLeetCodeUser(args: {
   return { inserted };
 }
 
-export async function verifyLeetCodeBioToken(
-  username: string,
-  token: string
-): Promise<boolean> {
+export async function verifyLeetCodeBioToken(username: string, token: string): Promise<boolean> {
   const stats = await getUserStats(username);
   if (!stats) return false;
   const bio = stats.aboutMe ?? "";
@@ -211,7 +208,7 @@ export async function syncLeetCodeContests(): Promise<{ upserted: number }> {
     select: { id: true, externalId: true },
   });
   const existingMap = new Map<string, string>(
-    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id])
+    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id]),
   );
 
   const toCreate = contests.filter((c) => !existingMap.has(c.titleSlug));
@@ -246,8 +243,8 @@ export async function syncLeetCodeContests(): Promise<{ upserted: number }> {
             startsAt: new Date(c.startTime * 1000),
             durationMin: Math.round(c.duration / 60),
           },
-        })
-      )
+        }),
+      ),
     );
   }
 

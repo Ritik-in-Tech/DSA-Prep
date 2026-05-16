@@ -18,11 +18,11 @@ export default function RootError({
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
       <h1 className="text-4xl font-bold">Something went wrong</h1>
-      <p className="mt-2 max-w-md text-sm text-muted-foreground">
+      <p className="text-muted-foreground mt-2 max-w-md text-sm">
         An unexpected error occurred. Please try again or head back home.
       </p>
       {error.digest && (
-        <p className="mt-2 text-xs text-muted-foreground/70">
+        <p className="text-muted-foreground/70 mt-2 text-xs">
           Reference: <code className="font-mono">{error.digest}</code>
         </p>
       )}
