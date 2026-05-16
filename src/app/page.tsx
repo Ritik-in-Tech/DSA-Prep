@@ -3,6 +3,8 @@ import { Flame, ListTodo, CalendarClock, Trophy, Sparkles, ArrowRight } from "lu
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function Home() {
   return (
@@ -81,6 +83,9 @@ export default function Home() {
         </a>{" "}
         · Built by Ritik
       </footer>
+
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 }
