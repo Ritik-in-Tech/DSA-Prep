@@ -259,3 +259,34 @@ export function mapLcDifficulty(d: LcQuestion["difficulty"]) {
       return "HARD" as const;
   }
 }
+
+// ---------- Contests ----------
+
+export interface LcContest {
+  title: string;
+  titleSlug: string;
+  startTime: number;
+  duration: number;
+}
+
+const UPCOMING_CONTESTS_QUERY = /* GraphQL */ `
+  query upcomingContests {
+    upcomingContests {
+      title
+      titleSlug
+      startTime
+      duration
+    }
+  }
+`;
+
+export async function getUpcomingLeetCodeContests(): Promise<LcContest[]> {
+  const data = await lcQuery<{ upcomingContests: LcContest[] | null }>(
+    UPCOMING_CONTESTS_QUERY
+  );
+  return data.upcomingContests ?? [];
+}
+
+export function lcContestUrl(slug: string): string {
+  return `https://leetcode.com/contest/${slug}/`;
+}

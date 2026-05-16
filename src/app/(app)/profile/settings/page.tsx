@@ -52,7 +52,11 @@ export default async function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PlatformHandleForm platform="LEETCODE" handle={lc} />
+          <PlatformHandleForm
+            platform="LEETCODE"
+            handle={lc}
+            timezone={user?.timezone ?? "UTC"}
+          />
         </CardContent>
       </Card>
 
@@ -61,12 +65,16 @@ export default async function SettingsPage() {
           <CardTitle>Codeforces</CardTitle>
           <CardDescription>
             We use the public Codeforces API. To verify, set your one-time token
-            as your Codeforces <em>first name</em> (Settings &rarr; Social
+            as your Codeforces <em>first name</em> (Settings &rarr; General
             &rarr; First Name), then click Verify.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PlatformHandleForm platform="CODEFORCES" handle={cf} />
+          <PlatformHandleForm
+            platform="CODEFORCES"
+            handle={cf}
+            timezone={user?.timezone ?? "UTC"}
+          />
         </CardContent>
       </Card>
 

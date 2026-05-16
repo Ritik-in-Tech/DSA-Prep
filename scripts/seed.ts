@@ -9,7 +9,10 @@
  */
 import { prisma } from "@/lib/db";
 import { syncCodeforcesCatalog, syncCodeforcesContests } from "@/server/sync/codeforces";
-import { syncLeetCodeCatalog } from "@/server/sync/leetcode";
+import {
+  syncLeetCodeCatalog,
+  syncLeetCodeContests,
+} from "@/server/sync/leetcode";
 import { STRIVER_SDE_SHEET } from "./data/striver-sde-sheet";
 import { NEETCODE_150 } from "./data/neetcode-150";
 import { seedSheet } from "./lib/seed-sheet";
@@ -28,6 +31,10 @@ async function main() {
   console.log("[seed] LeetCode catalog (this is the long one)…");
   const lc = await syncLeetCodeCatalog({ fullSync: true });
   console.log(`[seed]   LC problems upserted: ${lc.problemsUpserted}`);
+
+  console.log("[seed] LeetCode contests…");
+  const lcC = await syncLeetCodeContests();
+  console.log(`[seed]   LC contests upserted: ${lcC.upserted}`);
 
   console.log("[seed] Curated sheets…");
   await seedSheet({

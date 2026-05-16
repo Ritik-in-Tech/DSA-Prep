@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import type { Platform } from "@prisma/client";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { formatInTimezone } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -55,6 +58,15 @@ export default async function ContestsPage({
 
   const baseWhere: { platform?: Platform } = platform ? { platform } : {};
 
+  const session = await auth();
+  const user = session?.user?.id
+    ? await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { timezone: true },
+      })
+    : null;
+  const tz = user?.timezone ?? "UTC";
+
   const [upcoming, past] = await Promise.all([
     prisma.contest.findMany({
       where: { ...baseWhere, startsAt: { gte: now } },
@@ -73,7 +85,15 @@ export default async function ContestsPage({
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Contests</h1>
         <p className="text-sm text-muted-foreground">
-          Upcoming Codeforces (and LeetCode, when LC catalogs are seeded) contests.
+          Upcoming Codeforces and LeetCode contests. Times shown in{" "}
+          <span className="font-medium text-foreground">{tz}</span>{" "}
+          <Link
+            href="/profile/settings"
+            className="underline-offset-4 hover:underline"
+          >
+            (change)
+          </Link>
+          .
         </p>
       </div>
 
@@ -100,7 +120,10 @@ export default async function ContestsPage({
                       <Badge variant="secondary" className="mr-2 font-normal">
                         {c.platform}
                       </Badge>
-                      {c.startsAt.toLocaleString()} · {formatDuration(c.durationMin)}
+                      <time dateTime={c.startsAt.toISOString()}>
+                        {formatInTimezone(c.startsAt, tz)}
+                      </time>{" "}
+                      · {formatDuration(c.durationMin)}
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
@@ -137,7 +160,10 @@ export default async function ContestsPage({
                       <Badge variant="secondary" className="mr-2 font-normal">
                         {c.platform}
                       </Badge>
-                      {c.startsAt.toLocaleString()} · {formatDuration(c.durationMin)}
+                      <time dateTime={c.startsAt.toISOString()}>
+                        {formatInTimezone(c.startsAt, tz)}
+                      </time>{" "}
+                      · {formatDuration(c.durationMin)}
                     </CardDescription>
                   </div>
                   <a

@@ -2,7 +2,9 @@ import { prisma } from "@/lib/db";
 import {
   getProblemList,
   getRecentAcSubmissions,
+  getUpcomingLeetCodeContests,
   getUserStats,
+  lcContestUrl,
   lcProblemUrl,
   mapLcDifficulty,
 } from "@/lib/leetcode";
@@ -198,4 +200,56 @@ export async function verifyLeetCodeBioToken(
   if (!stats) return false;
   const bio = stats.aboutMe ?? "";
   return bio.includes(token);
+}
+
+export async function syncLeetCodeContests(): Promise<{ upserted: number }> {
+  const contests = await getUpcomingLeetCodeContests();
+  if (contests.length === 0) return { upserted: 0 };
+
+  const existing = await prisma.contest.findMany({
+    where: { platform: "LEETCODE" },
+    select: { id: true, externalId: true },
+  });
+  const existingMap = new Map<string, string>(
+    existing.map((e: { externalId: string; id: string }) => [e.externalId, e.id])
+  );
+
+  const toCreate = contests.filter((c) => !existingMap.has(c.titleSlug));
+  const toUpdate = contests.filter((c) => existingMap.has(c.titleSlug));
+
+  for (const batch of chunk(toCreate, 100)) {
+    await prisma.contest.createMany({
+      data: batch.map((c) => ({
+        platform: "LEETCODE" as const,
+        externalId: c.titleSlug,
+        name: c.title,
+        url: lcContestUrl(c.titleSlug),
+        startsAt: new Date(c.startTime * 1000),
+        durationMin: Math.round(c.duration / 60),
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  for (const batch of chunk(toUpdate, 50)) {
+    await Promise.all(
+      batch.map((c) =>
+        prisma.contest.update({
+          where: {
+            platform_externalId: {
+              platform: "LEETCODE",
+              externalId: c.titleSlug,
+            },
+          },
+          data: {
+            name: c.title,
+            startsAt: new Date(c.startTime * 1000),
+            durationMin: Math.round(c.duration / 60),
+          },
+        })
+      )
+    );
+  }
+
+  return { upserted: toCreate.length + toUpdate.length };
 }

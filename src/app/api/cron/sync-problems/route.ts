@@ -4,7 +4,10 @@ import {
   syncCodeforcesCatalog,
   syncCodeforcesContests,
 } from "@/server/sync/codeforces";
-import { syncLeetCodeCatalog } from "@/server/sync/leetcode";
+import {
+  syncLeetCodeCatalog,
+  syncLeetCodeContests,
+} from "@/server/sync/leetcode";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -20,16 +23,18 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
   try {
-    const [cf, contests, lc] = await Promise.all([
+    const [cf, cfContests, lc, lcContests] = await Promise.all([
       syncCodeforcesCatalog(),
       syncCodeforcesContests(),
       syncLeetCodeCatalog({ fullSync: false }),
+      syncLeetCodeContests(),
     ]);
     return NextResponse.json({
       ok: true,
       cf,
-      contests,
+      cfContests,
       lc,
+      lcContests,
       at: new Date().toISOString(),
     });
   } catch (err) {

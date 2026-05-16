@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { formatInTimezone } from "@/lib/utils";
 import {
   addHandleAction,
   removeHandleAction,
@@ -19,9 +20,10 @@ import {
 interface Props {
   platform: "LEETCODE" | "CODEFORCES";
   handle: PlatformHandle | null;
+  timezone?: string;
 }
 
-export function PlatformHandleForm({ platform, handle }: Props) {
+export function PlatformHandleForm({ platform, handle, timezone = "UTC" }: Props) {
   const [pending, startTransition] = useTransition();
   const [verifyToken, setVerifyToken] = useState<string | null>(
     handle?.verifyToken ?? null
@@ -115,7 +117,7 @@ export function PlatformHandleForm({ platform, handle }: Props) {
             <span className="text-muted-foreground">
               Last synced{" "}
               {handle?.lastSyncedAt
-                ? new Date(handle.lastSyncedAt).toLocaleString()
+                ? formatInTimezone(handle.lastSyncedAt, timezone)
                 : "never"}
             </span>
           </div>

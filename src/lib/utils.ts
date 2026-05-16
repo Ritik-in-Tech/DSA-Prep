@@ -30,3 +30,18 @@ export function chunk<T>(arr: T[], size: number): T[][] {
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export function formatInTimezone(
+  input: string | number | Date,
+  timezone = "UTC",
+  options: Intl.DateTimeFormatOptions = {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }
+): string {
+  const date = input instanceof Date ? input : new Date(input);
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    ...options,
+  }).format(date);
+}

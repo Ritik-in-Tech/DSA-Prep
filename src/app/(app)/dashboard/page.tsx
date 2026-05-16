@@ -4,6 +4,7 @@ import { ExternalLink, CalendarClock } from "lucide-react";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { formatInTimezone } from "@/lib/utils";
 import { computeStreak } from "@/server/services/streak";
 import { recommendForUser } from "@/server/services/recommendations";
 import {
@@ -181,9 +182,12 @@ export default async function DashboardPage() {
                 <CalendarClock className="h-4 w-4 text-muted-foreground" />
                 <span className="truncate">{c.name}</span>
               </div>
-              <span className="shrink-0 text-xs text-muted-foreground">
-                {c.startsAt.toLocaleString()}
-              </span>
+              <time
+                dateTime={c.startsAt.toISOString()}
+                className="shrink-0 text-xs text-muted-foreground"
+              >
+                {formatInTimezone(c.startsAt, tz)}
+              </time>
             </a>
           ))}
         </CardContent>
