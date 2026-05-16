@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: "Which endpoint to hit"
+        description: "Which sync to run"
         required: true
         default: "sync-users"
         type: choice
@@ -26,27 +26,49 @@ jobs:
   sync-users:
     if: github.event.schedule == '0 1-23/2 * * *' || github.event.inputs.target == 'sync-users'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      LEETCODE_GRAPHQL_URL: ${{ secrets.LEETCODE_GRAPHQL_URL }}
     steps:
-      - name: Hit /api/cron/sync-users
-        env:
-          APP_URL: ${{ secrets.APP_URL }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        run: |
-          curl -fSs --max-time 540 \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            "$APP_URL/api/cron/sync-users"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+      - name: Run sync-users
+        run: pnpm cron:sync-users
 
   sync-problems:
     if: github.event.schedule == '0 */6 * * *' || github.event.inputs.target == 'sync-problems'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      LEETCODE_GRAPHQL_URL: ${{ secrets.LEETCODE_GRAPHQL_URL }}
     steps:
-      - name: Hit /api/cron/sync-problems
-        env:
-          APP_URL: ${{ secrets.APP_URL }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        run: |
-          curl -fSs --max-time 540 \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            "$APP_URL/api/cron/sync-problems"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+      - name: Run sync-problems
+        run: pnpm cron:sync-problems

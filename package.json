@@ -17,7 +17,9 @@
     "db:seed": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed.ts",
     "seed:cf": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-cf.ts",
     "seed:lc": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-lc.ts",
-    "seed:sheets": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-sheets.ts"
+    "seed:sheets": "tsx --tsconfig tsconfig.scripts.json --env-file=.env scripts/seed-sheets.ts",
+    "cron:sync-problems": "tsx --tsconfig tsconfig.scripts.json scripts/cron/sync-problems.ts",
+    "cron:sync-users": "tsx --tsconfig tsconfig.scripts.json scripts/cron/sync-users.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
